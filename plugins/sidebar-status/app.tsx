@@ -28,31 +28,35 @@ const LABEL_TIER = '[data-sidebar-sticky-tier="label"]';
 const PROJECT_SECTION = "[data-sidebar-sticky-project-item] > [data-sidebar-section-id]";
 const PROJECT_HEADER = `${PROJECT_SECTION} > ${LABEL_TIER}`;
 
+// Colors use Cloudroom's raw theme variables (--foreground, --warning-text…).
+// Its Tailwind `@theme inline` block compiles --color-* names away, so those
+// are undefined at runtime and would render transparent.
+//
 // Every glyph fills the 14px slot the 3.5-size location icon used, so
 // indentation and the tree guide line stay where they were.
 const GLYPH_CSS: Record<(typeof STATES)[number]["glyph"], string> = {
   running: `
     width: 11px; height: 11px; margin: 1.5px;
-    border: 1.5px solid var(--color-blue-400, #60a5fa);
+    border: 1.5px solid #60a5fa;
     border-top-color: transparent;
     border-radius: 50%;
     animation: sidebar-status-spin 0.9s linear infinite;`,
   "needs-you": `
     content: "?";
-    border: 1.25px solid var(--color-warning-text, #f59e0b);
+    border: 1.25px solid var(--warning-text);
     border-radius: 50%;
-    color: var(--color-warning-text, #f59e0b);
+    color: var(--warning-text);
     font: 700 9px/1 system-ui, sans-serif;`,
   failed: `
     content: "\\00d7";
-    border: 1.25px solid var(--color-destructive-text, #ef4444);
+    border: 1.25px solid var(--destructive-text);
     border-radius: 50%;
-    color: var(--color-destructive-text, #ef4444);
+    color: var(--destructive-text);
     font: 700 11px/1 system-ui, sans-serif;`,
   unread: `
     width: 6px; height: 6px; margin: 4px;
     border-radius: 50%;
-    background: var(--color-foreground);`,
+    background: var(--foreground);`,
 };
 
 const SIDEBAR_STATUS_CSS = `
@@ -84,19 +88,19 @@ ${STATES.map(({ label, glyph }) => `${rowIn(label)} > a + span::before {${GLYPH_
 
 ${ROW}:has(> a ~ span:last-child [aria-label^="Unread thread"]) .bb-thread-title {
   font-weight: 600;
-  color: var(--color-foreground);
+  color: var(--foreground);
 }
 
 /* Idle threads recede so projects and threads that need attention lead. */
 ${ROW}:not(.bb-sidebar-selected-row):not(:hover):not(${ATTENTION_STATES}) .bb-thread-title {
-  color: color-mix(in oklab, var(--color-sidebar-foreground) 62%, transparent);
+  color: color-mix(in oklab, var(--sidebar-foreground) 62%, transparent);
 }
 
 /* Project headers outrank their threads: Cloudroom draws them 12px and dim. */
 ${PROJECT_HEADER} {
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-foreground);
+  color: var(--foreground);
 }
 ${PROJECT_HEADER} button[aria-expanded].bb-sidebar-hover-actions {
   opacity: 0.45;
@@ -109,7 +113,7 @@ ${PROJECT_HEADER} button[aria-expanded].bb-sidebar-hover-actions {
 ${PROJECT_HEADER} + div:has(> div > [data-icon-root] + p) { display: none; }
 ${PROJECT_SECTION}:has(> ${LABEL_TIER} + div > div > [data-icon-root] + p) > ${LABEL_TIER} {
   font-weight: 500;
-  color: var(--color-muted-foreground);
+  color: var(--muted-foreground);
 }
 `;
 
