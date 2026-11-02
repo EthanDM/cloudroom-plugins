@@ -1,0 +1,8 @@
+{
+  "$schema": "https://getbb.app/schemas/plugins.schema.json",
+  "schemaVersion": 1,
+  "name": "ethan-cloudroom-plugins",
+  "plugins": [
+    { "name": "hide-plan-card", "source": "./plugins/hide-plan-card" }
+  ]
+}
