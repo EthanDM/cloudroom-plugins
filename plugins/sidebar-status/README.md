@@ -14,7 +14,7 @@ Puts each thread's status where the Local/Cloud icon was, and bolds unread threa
 
 The % is Cloudroom's AI-written purpose estimate, so it can lag or be optimistic. A small app overlay fetches it (and each thread's last activity) from the plugin's server code (`bb.sdk.threads.list`) every minute while the page is visible, and tags each row with a 10% bucket for the CSS. The SDK's thread type doesn't declare `purpose` yet, so the server reads it defensively; if Cloudroom drops the field, rings go empty.
 
-Stale threads: an idle thread with no activity for 3+ days shows its age ("4d", "2w", "6mo") muted on the right, a nudge to archive. It uses the empty trailing slot, so titles keep their width; it hides on hover so the row actions show, and is off on phones, where the actions menu always occupies that slot. Age comes from Cloudroom's `latestAttentionAt`, fetched with the rings, so it can be up to a minute stale.
+Stale threads: an idle thread with no activity for 1+ day shows its age ("4d", "2w", "6mo") muted on the right, a nudge to archive. It uses the empty trailing slot, so titles keep their width; it hides on hover so the row actions show, and is off on phones, where the actions menu always occupies that slot. Age comes from Cloudroom's `latestAttentionAt`, fetched with the rings, so it can be up to a minute stale.
 
 Hierarchy fixes:
 
