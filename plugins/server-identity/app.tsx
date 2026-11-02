@@ -7,8 +7,8 @@ const CSS = `
   content: "";
   position: absolute;
   pointer-events: none;
-  top: 0.125rem;
-  right: 0.125rem;
+  top: 0.375rem;
+  right: 0.375rem;
   width: 0.3125rem;
   height: 0.3125rem;
   border-radius: 50%;
