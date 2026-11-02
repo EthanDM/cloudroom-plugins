@@ -6,6 +6,7 @@ Personal Cloudroom tweaks. Each plugin lives in `plugins/<name>/` and is listed 
 | --- | --- |
 | `hide-plan-card` | Hides Cloud promos: the Free plan card, rotating Pro tip, Cloud nudges, and beta offer. |
 | `server-identity` | Adds a tiny server dot to the footer's phone icon: blue for edm-node, lime for edm-mbp. |
+| `compact-navigation` | Packs native sidebar navigation into an icon bar with tooltips, preserving More and customization. |
 | `thread-ids` | Palette commands to copy the open thread's ID, `@thread:` mention, or link. |
 | `mobile-fixes` | Phone only: safe-area padding in picker sheets, hides Plugins and Skills nav rows. |
 | `sidebar-status` | Thread status and % done rings in the left icon slot, bold unread titles, stronger project headers, dimmed idle threads, no "No threads" rows, animated expand/collapse. |
