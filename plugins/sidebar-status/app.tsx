@@ -45,7 +45,7 @@ const idleLocalRow = (progress = "") =>
 // the trailing slot, a nudge to archive. The overlay writes the label onto
 // the trailing span, since CSS attr() only reads the element it draws on.
 const AGE_ATTRIBUTE = "data-sidebar-status-age";
-const STALE_AFTER_DAYS = 1;
+const STALE_AFTER_DAYS = 3;
 const DAY_MS = 86_400_000;
 // The trailing slot is empty on idle rows: Cloudroom renders a
 // [data-sidebar-thread-trailing-indicator] there only for other states, and
