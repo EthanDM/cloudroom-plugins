@@ -7,8 +7,8 @@
     "bbPluginSdk": ">=0.6.50"
   },
   "bb": {
-    "name": "Hide Plan Card",
-    "description": "Hides the Free plan card in the sidebar.",
+    "name": "Hide Cloud Promos",
+    "description": "Hides Cloud promotional cards, tips, and nudges while keeping limits and billing visible.",
     "branding": {
       "icon": "EyeOff"
     },
