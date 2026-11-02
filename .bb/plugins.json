@@ -7,6 +7,7 @@
     { "name": "thread-ids", "source": "./plugins/thread-ids" },
     { "name": "mobile-fixes", "source": "./plugins/mobile-fixes" },
     { "name": "unread-emphasis", "source": "./plugins/unread-emphasis" },
-    { "name": "keep-spinners", "source": "./plugins/keep-spinners" }
+    { "name": "keep-spinners", "source": "./plugins/keep-spinners" },
+    { "name": "hide-local-icon", "source": "./plugins/hide-local-icon" }
   ]
 }

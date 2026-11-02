@@ -8,6 +8,7 @@ Personal Cloudroom tweaks. Each plugin lives in `plugins/<name>/` and is listed 
 | `thread-ids` | Palette commands to copy the open thread's ID, `@thread:` mention, or link. |
 | `mobile-fixes` | Phone only: safe-area padding in picker sheets, hides Plugins and Skills nav rows. |
 | `unread-emphasis` | Bigger accent-colored unread dot and bold unread titles. |
+| `hide-local-icon` | Hides the laptop (Local) icon on sidebar thread rows; Cloud threads keep theirs. |
 | `keep-spinners` | Desktop app: keeps running-agent animations moving when the window loses focus. |
 
 ## Install or update on a Cloudroom server
