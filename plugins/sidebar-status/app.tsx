@@ -33,8 +33,8 @@ const PROGRESS_ATTRIBUTE = "data-sidebar-status-progress";
 const PROGRESS_POLL_MS = 60_000;
 // Kept faint on purpose: rings are an anchor and a glance-level hint, and
 // must stay quieter than the attention glyphs above.
-const RING_TRACK = "color-mix(in oklab, var(--muted-foreground) 28%, transparent)";
-const RING_ARC = "color-mix(in oklab, var(--muted-foreground) 70%, transparent)";
+const RING_TRACK = "color-mix(in oklab, var(--muted-foreground) 15%, transparent)";
+const RING_ARC = "color-mix(in oklab, var(--muted-foreground) 38%, transparent)";
 // Cuts the conic fill down to a 1.5px stroke.
 const RING_MASK = "radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px))";
 const idleLocalRow = (progress = "") =>
@@ -132,7 +132,7 @@ ${idleLocalRow("100")} > a + span::before {
   mask: none;
   width: 14px; height: 14px; margin: 0;
   color: ${RING_ARC};
-  font: 700 10px/1 system-ui, sans-serif;
+  font: 700 9px/1 system-ui, sans-serif;
 }
 
 /* Project headers outrank their threads: Cloudroom draws them 12px and dim. */
