@@ -3,6 +3,10 @@
   "schemaVersion": 1,
   "name": "ethan-cloudroom-plugins",
   "plugins": [
-    { "name": "hide-plan-card", "source": "./plugins/hide-plan-card" }
+    { "name": "hide-plan-card", "source": "./plugins/hide-plan-card" },
+    { "name": "thread-ids", "source": "./plugins/thread-ids" },
+    { "name": "mobile-fixes", "source": "./plugins/mobile-fixes" },
+    { "name": "unread-emphasis", "source": "./plugins/unread-emphasis" },
+    { "name": "keep-spinners", "source": "./plugins/keep-spinners" }
   ]
 }

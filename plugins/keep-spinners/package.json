@@ -1,0 +1,26 @@
+{
+  "name": "bb-plugin-keep-spinners",
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "bb": ">=139.0",
+    "bbPluginSdk": ">=0.6.50"
+  },
+  "bb": {
+    "name": "Keep Spinners",
+    "description": "Keeps running-agent animations moving when the desktop window loses focus.",
+    "branding": {
+      "icon": "Play"
+    },
+    "server": "./server.ts",
+    "app": "./app.tsx"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@get-bb/plugin-sdk": "0.6.49",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.7.0"
+  }
+}
