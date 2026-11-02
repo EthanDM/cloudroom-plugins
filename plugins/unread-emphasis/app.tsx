@@ -5,8 +5,9 @@ import { definePluginApp } from "@get-bb/plugin-sdk/app";
 // .bb-thread-title. A thread row's container directly holds its
 // a[data-sidebar-thread-id] link, and child threads render in separate
 // containers, so :has() never bolds a parent for a child's unread state.
-// Collapsed parents and sections roll their children's state into the same
-// indicator, so they get emphasized too.
+// Collapsed parent threads roll their children's state into the same
+// indicator, so they get emphasized too. Section headers have no
+// .bb-thread-title, so only their success dot grows.
 const UNREAD_EMPHASIS_CSS = `
 [aria-label="Unread thread succeeded"] {
   width: 8px !important;
