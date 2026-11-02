@@ -13,8 +13,8 @@ Personal Cloudroom tweaks. Each plugin lives in `plugins/<name>/` and is listed 
 ## Install or update on a Cloudroom server
 
 ```sh
-room-cli plugin install git:https://github.com/EthanDM/cloudroom-plugins.git@main --plugin <name>
-room-cli plugin update <name>
+room-cli plugin install git:https://github.com/EthanDM/cloudroom-plugins.git@main --plugin <name> --yes
+room-cli plugin update <name> --yes
 ```
 
 ## Add a plugin
