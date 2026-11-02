@@ -95,6 +95,11 @@ After installing a fix, capture new browser evidence for the new bundle.
   three palette command values.
   Avoid exposing or reading existing clipboard contents. Command registration
   alone is insufficient; mark copy behavior untested if it cannot be exercised.
+- **thread-menu-keys:** verify visible hints and P/U/R/A/C/S/Delete against the
+  actual menu, including an off-thread row, toggle labels and native confirmation.
+  Keep action-mutation tests in QA fixtures; cancel live rename/delete dialogs.
+  Cover closed/cached menus, submenus, inputs, modifiers, repeats, composition,
+  disabled actions and disposal. Test copy-ID with thread-ids enabled and disabled.
 - **keep-spinners:** test observer cleanup in a fixture and a real running spinner
   in an unfocused desktop window. Safari never supplied the pause behavior, so a
   successful Safari check does not prove desktop functionality.

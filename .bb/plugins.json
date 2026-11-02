@@ -5,6 +5,7 @@
   "plugins": [
     { "name": "hide-plan-card", "source": "./plugins/hide-plan-card" },
     { "name": "thread-ids", "source": "./plugins/thread-ids" },
+    { "name": "thread-menu-keys", "source": "./plugins/thread-menu-keys" },
     { "name": "mobile-fixes", "source": "./plugins/mobile-fixes" },
     { "name": "keep-spinners", "source": "./plugins/keep-spinners" },
     { "name": "sidebar-status", "source": "./plugins/sidebar-status" },

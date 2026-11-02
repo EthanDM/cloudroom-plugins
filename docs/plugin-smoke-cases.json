@@ -106,5 +106,19 @@
       "id": "navigation-cleanup",
       "description": "Route/remount/text updates work; disposal removes owned spans, attributes, observer and CSS."
     }
+  ],
+  "thread-menu-keys": [
+    {
+      "id": "menu-key-actions",
+      "description": "P/U/R/A/C/S/Delete activate the displayed native action for that menu thread; toggles, confirmations, dropdown/right-click/compact drawer and copy-ID integration work."
+    },
+    {
+      "id": "menu-key-scope",
+      "description": "No activation outside a root thread menu, in inputs/submenus/other dialogs, on disabled/ambiguous actions, modifiers, composition or repeats; native navigation/typeahead remains available for other keys."
+    },
+    {
+      "id": "menu-key-lifecycle",
+      "description": "Visible hints do not duplicate accessible names; aria-keyshortcuts, cached menus, label updates, remounts and cleanup work in both themes."
+    }
   ]
 }
