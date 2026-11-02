@@ -8,7 +8,7 @@
   },
   "bb": {
     "name": "Hide Plan Card",
-    "description": "Hides the Free plan card in the Cloud queue.",
+    "description": "Hides the Free plan card in the sidebar.",
     "branding": {
       "icon": "EyeOff"
     },
