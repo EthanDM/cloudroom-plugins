@@ -58,10 +58,15 @@ const LABEL_TIER = '[data-sidebar-sticky-tier="label"]';
 // so match the sticky group directly under the project item.
 const PROJECT_SECTION = "[data-sidebar-sticky-project-item] > [data-sidebar-sticky-group]";
 const PROJECT_HEADER = `${PROJECT_SECTION} > ${LABEL_TIER}`;
-const EMPTY_PROJECT = `${PROJECT_SECTION}:has(> ${LABEL_TIER} button[aria-expanded="true"]):not(:has(a[data-sidebar-thread-id]))`;
-// The same test from the project item, the sibling level, for spacing rules.
-// :has() can't nest, so this can't be built from EMPTY_PROJECT.
-const EMPTY_PROJECT_ITEM = `[data-sidebar-sticky-project-item]:has(> [data-sidebar-sticky-group] > ${LABEL_TIER} button[aria-expanded="true"]):not(:has(a[data-sidebar-thread-id]))`;
+// An expanded project with no threads shows one message in its children slot:
+// "No threads", "All threads pinned", or "Threads unavailable" (load failed),
+// with identical markup. Only the first two mean empty, so the overlay tags
+// the project item by exact text. Anything else, including the load error, a
+// loading skeleton, or reworded copy, stays visible.
+const EMPTY_ATTRIBUTE = "data-sidebar-status-empty";
+const EMPTY_MESSAGES = new Set(["No threads", "All threads pinned"]);
+const EMPTY_PROJECT_ITEM = `[data-sidebar-sticky-project-item][${EMPTY_ATTRIBUTE}]`;
+const EMPTY_PROJECT = `${EMPTY_PROJECT_ITEM} > [data-sidebar-sticky-group]`;
 
 // Colors use Cloudroom's raw theme variables (--foreground, --warning-text…).
 // Its Tailwind `@theme inline` block compiles --color-* names away, so those
@@ -210,10 +215,8 @@ ${SIDEBAR} span.w-px.bg-border-hairline {
    font size. */
 ${SIDEBAR} span.w-px.bg-border-hairline { translate: calc(0.4375rem - 8.5px) 0; }
 
-/* Empty projects: an expanded project with no thread links. Drop its
-   children (the "No threads" row, or "All threads pinned" / "Threads
-   unavailable", which share that slot) and dim the header. Collapsed projects
-   also have no links in the DOM, hence the aria-expanded check. The dim is a
+/* Empty projects (tagged by the overlay, see EMPTY_ATTRIBUTE): drop the
+   "No threads" / "All threads pinned" row and dim the header. The dim is a
    fraction of --foreground, below idle threads: dark themes set
    --muted-foreground nearly as bright as --foreground, which would leave
    empty headers brighter than the 88% ones. */
@@ -285,10 +288,11 @@ function useSidebarThreads(): SidebarThreads {
 }
 
 /**
- * Tags each sidebar row container with its progress bucket, and its trailing
- * span with its stale age. Rows remount as the list changes, so a
- * MutationObserver re-tags after sidebar DOM changes. React leaves attributes
- * it doesn't own alone on rows it keeps.
+ * Tags each sidebar row container with its progress bucket, its trailing
+ * span with its stale age, and empty project items. Rows remount and empty
+ * messages change text in place, so a MutationObserver re-tags after sidebar
+ * DOM and text changes. React leaves attributes it doesn't own alone on
+ * elements it keeps.
  */
 function useRowAttributes(threads: SidebarThreads): void {
   useEffect(() => {
@@ -304,13 +308,17 @@ function useRowAttributes(threads: SidebarThreads): void {
           setOrRemoveAttribute(trailing, AGE_ATTRIBUTE, thread ? staleAge(thread.lastActiveAt, now) : null);
         }
       }
+      for (const item of document.querySelectorAll("[data-sidebar-sticky-project-item]")) {
+        const message = item.querySelector(`:scope > [data-sidebar-sticky-group] > ${LABEL_TIER} + div`)?.textContent?.trim();
+        setOrRemoveAttribute(item, EMPTY_ATTRIBUTE, message && EMPTY_MESSAGES.has(message) ? "" : null);
+      }
     };
 
     let frame = 0;
     const observer = new MutationObserver((records) => {
       if (frame) return;
       const touchesSidebar = records.some(
-        (record) => record.target instanceof Element && record.target.closest("[data-sidebar-sticky-project-item], [data-sidebar-section-id]"),
+        ({ target }) => (target instanceof Element ? target : target.parentElement)?.closest("[data-sidebar-sticky-project-item], [data-sidebar-section-id]"),
       );
       if (touchesSidebar) frame = requestAnimationFrame(() => {
         frame = 0;
@@ -318,13 +326,14 @@ function useRowAttributes(threads: SidebarThreads): void {
       });
     });
     tagRows();
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, { childList: true, characterData: true, subtree: true });
     return () => {
       observer.disconnect();
       cancelAnimationFrame(frame);
-      for (const element of document.querySelectorAll(`[${PROGRESS_ATTRIBUTE}], [${AGE_ATTRIBUTE}]`)) {
+      for (const element of document.querySelectorAll(`[${PROGRESS_ATTRIBUTE}], [${AGE_ATTRIBUTE}], [${EMPTY_ATTRIBUTE}]`)) {
         element.removeAttribute(PROGRESS_ATTRIBUTE);
         element.removeAttribute(AGE_ATTRIBUTE);
+        element.removeAttribute(EMPTY_ATTRIBUTE);
       }
     };
   }, [threads]);
