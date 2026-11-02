@@ -22,7 +22,7 @@ Hierarchy fixes:
 
 Motion: expanding or collapsing a project slides its thread list open or closed (about 150–260ms, longer lists take slightly longer). Cloudroom mounts and unmounts the list instead of hiding it, so collapse briefly re-inserts the removed list as an inert, non-clickable copy and shrinks it away (`collapse-motion.ts`). Off when the system asks for reduced motion. Child-thread groups under a parent thread don't animate.
 
-Tree guide lines in the sidebar are repainted a neutral grey (Cloudroom's hairline color picks up the theme's tint).
+Tree guide lines and the sidebar's right edge are repainted a neutral grey (Cloudroom's hairline and seam colors pick up the theme's tint).
 
 Idle Cloud threads keep their cloud icon. Other states (drafts, queued messages, plan mode, background work) keep Cloudroom's own indicator on the right. The 14px slot is kept, so indentation doesn't change.
 
