@@ -31,12 +31,19 @@ const ATTENTION_STATES = STATES.map(({ label }) => `:has(> a ~ span:last-child [
 // "0" … "100") onto each row container; CSS draws the ring from it.
 const PROGRESS_ATTRIBUTE = "data-sidebar-status-progress";
 const PROGRESS_POLL_MS = 60_000;
-const RING_COLOR = "color-mix(in oklab, var(--muted-foreground) 75%, transparent)";
+// Kept faint on purpose: rings are an anchor and a glance-level hint, and
+// must stay quieter than the attention glyphs above.
+const RING_TRACK = "color-mix(in oklab, var(--muted-foreground) 28%, transparent)";
+const RING_ARC = "color-mix(in oklab, var(--muted-foreground) 70%, transparent)";
+// Cuts the conic fill down to a 1.5px stroke.
+const RING_MASK = "radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px))";
 const idleLocalRow = (progress = "") =>
   `${ROW}[${PROGRESS_ATTRIBUTE}${progress && `="${progress}"`}]:not(${ATTENTION_STATES}):has(> a + span > [aria-label="Local thread"])`;
 
 const LABEL_TIER = '[data-sidebar-sticky-tier="label"]';
-const PROJECT_SECTION = "[data-sidebar-sticky-project-item] > [data-sidebar-section-id]";
+// Project groups carry no section id (only Pinned and similar sections do),
+// so match the sticky group directly under the project item.
+const PROJECT_SECTION = "[data-sidebar-sticky-project-item] > [data-sidebar-sticky-group]";
 const PROJECT_HEADER = `${PROJECT_SECTION} > ${LABEL_TIER}`;
 
 // Colors use Cloudroom's raw theme variables (--foreground, --warning-text…).
@@ -109,18 +116,23 @@ ${ROW}:not(.bb-sidebar-selected-row):not(:hover):not(${ATTENTION_STATES}) .bb-th
 
 ${idleLocalRow()} > a + span::before {
   width: 10px; height: 10px; margin: 2px;
-  border: 1.25px solid ${RING_COLOR};
   border-radius: 50%;
+  background: conic-gradient(${RING_ARC} var(--sidebar-status-progress, 0%), ${RING_TRACK} 0);
+  -webkit-mask: ${RING_MASK};
+  mask: ${RING_MASK};
 }
 ${[10, 20, 30, 40, 50, 60, 70, 80, 90]
-  .map((percent) => `${idleLocalRow(String(percent))} > a + span::before { background: conic-gradient(${RING_COLOR} ${percent}%, transparent 0); }`)
+  .map((percent) => `${idleLocalRow(String(percent))} > a + span::before { --sidebar-status-progress: ${percent}%; }`)
   .join("\n")}
-/* Done: a filled ring with a check, a hint that the thread can be archived. */
+/* Done: a bare muted check, a hint that the thread can be archived. */
 ${idleLocalRow("100")} > a + span::before {
   content: "\\2713";
-  background: ${RING_COLOR};
-  color: var(--sidebar, var(--background));
-  font: 800 7px/1 system-ui, sans-serif;
+  background: none;
+  -webkit-mask: none;
+  mask: none;
+  width: 14px; height: 14px; margin: 0;
+  color: ${RING_ARC};
+  font: 700 10px/1 system-ui, sans-serif;
 }
 
 /* Project headers outrank their threads: Cloudroom draws them 12px and dim. */
@@ -208,7 +220,7 @@ function useRowProgressAttributes(progress: ThreadProgress): void {
     const observer = new MutationObserver((records) => {
       if (frame) return;
       const touchesSidebar = records.some(
-        (record) => record.target instanceof Element && record.target.closest("[data-sidebar-section-id]"),
+        (record) => record.target instanceof Element && record.target.closest("[data-sidebar-sticky-project-item], [data-sidebar-section-id]"),
       );
       if (touchesSidebar) frame = requestAnimationFrame(() => {
         frame = 0;

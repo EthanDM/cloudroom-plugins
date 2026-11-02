@@ -8,8 +8,8 @@ Puts each thread's status where the Local/Cloud icon was, and bolds unread threa
 | Amber `?` | Needs you |
 | Red `×` | Failed, unread |
 | White dot | Done, unread |
-| Muted ring, filled to the % | Idle Local thread: Cloudroom's purpose "% done" (the hover card's bar) |
-| Muted ring with a check | Idle and 100% done, a hint it can be archived |
+| Faint thin ring, arc drawn to the % | Idle Local thread: Cloudroom's purpose "% done" (the hover card's bar) |
+| Muted check | Idle and 100% done, a hint it can be archived |
 | Empty ring | Idle, no purpose summary yet |
 
 The % is Cloudroom's AI-written purpose estimate, so it can lag or be optimistic. A small app overlay fetches it from the plugin's server code (`bb.sdk.threads.list`) every minute while the page is visible, and tags each row with a 10% bucket for the CSS. The SDK's thread type doesn't declare `purpose` yet, so the server reads it defensively; if Cloudroom drops the field, rings go empty.
@@ -22,7 +22,7 @@ Hierarchy fixes:
 
 Idle Cloud threads keep their cloud icon. Other states (drafts, queued messages, plan mode, background work) keep Cloudroom's own indicator on the right. The 14px slot is kept, so indentation doesn't change.
 
-Assumes Settings → Appearance → Harness icons is Off (the default). Matches Cloudroom v139 markup: the status `aria-label`s ("Thread working", "Thread needs user input", "Unread thread failed", "Unread thread succeeded"), `[aria-label="Local thread"]`, `.bb-thread-title`, `.bb-sidebar-selected-row`, and the project header's `[data-sidebar-sticky-project-item] > [data-sidebar-section-id] > [data-sidebar-sticky-tier="label"]`. If one changes, that state falls back to Cloudroom's own look.
+Assumes Settings → Appearance → Harness icons is Off (the default). Matches Cloudroom v139 markup: the status `aria-label`s ("Thread working", "Thread needs user input", "Unread thread failed", "Unread thread succeeded"), `[aria-label="Local thread"]`, `.bb-thread-title`, `.bb-sidebar-selected-row`, and the project header's `[data-sidebar-sticky-project-item] > [data-sidebar-sticky-group] > [data-sidebar-sticky-tier="label"]`. If one changes, that state falls back to Cloudroom's own look.
 
 Collapsed project sections keep Cloudroom's own rollup indicator.
 
