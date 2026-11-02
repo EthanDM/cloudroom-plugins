@@ -41,6 +41,7 @@ const RING_MASK = "radial-gradient(farthest-side, transparent calc(100% - 1.5px)
 const idleLocalRow = (progress = "") =>
   `${ROW}[${PROGRESS_ATTRIBUTE}${progress && `="${progress}"`}]:not(${ATTENTION_STATES}):has(> a + span > [aria-label="Local thread"])`;
 
+const SIDEBAR = ":is([data-sidebar-sticky-project-item], [data-sidebar-section-id])";
 const LABEL_TIER = '[data-sidebar-sticky-tier="label"]';
 // Project groups carry no section id (only Pinned and similar sections do),
 // so match the sticky group directly under the project item.
@@ -148,6 +149,16 @@ ${PROJECT_HEADER} {
 ${PROJECT_HEADER} button[aria-expanded].bb-sidebar-hover-actions {
   opacity: 0.45;
   pointer-events: auto;
+}
+
+/* Tree guide lines use --border-hairline, a mix of the theme's ink and canvas
+   that tinted themes carry into the lines (olive under a warm canvas).
+   Repaint them in the muted grey the rings use so color stays reserved for
+   status. Covers the project group line (a ::before) and the child-thread
+   group line (a span). */
+${SIDEBAR} [class*="before:bg-border-hairline"]::before,
+${SIDEBAR} span.w-px.bg-border-hairline {
+  background-color: color-mix(in oklab, var(--muted-foreground) 30%, transparent);
 }
 
 /* Empty projects: an expanded project with no thread links. Drop its
