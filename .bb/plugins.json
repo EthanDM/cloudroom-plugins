@@ -7,6 +7,7 @@
     { "name": "thread-ids", "source": "./plugins/thread-ids" },
     { "name": "mobile-fixes", "source": "./plugins/mobile-fixes" },
     { "name": "keep-spinners", "source": "./plugins/keep-spinners" },
-    { "name": "sidebar-status", "source": "./plugins/sidebar-status" }
+    { "name": "sidebar-status", "source": "./plugins/sidebar-status" },
+    { "name": "ui-scale", "source": "./plugins/ui-scale" }
   ]
 }

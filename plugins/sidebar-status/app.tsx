@@ -67,11 +67,14 @@ const EMPTY_PROJECT_ITEM = `[data-sidebar-sticky-project-item]:has(> [data-sideb
 // Its Tailwind `@theme inline` block compiles --color-* names away, so those
 // are undefined at runtime and would render transparent.
 //
-// Every glyph fills the 14px slot the 3.5-size location icon used, so
+// Sizes are in rem (16px base) so they follow ui-scale or any root font
+// size the way Cloudroom's own rem-based UI does.
+//
+// Every glyph fills the 0.875rem slot the size-3.5 location icon used, so
 // indentation and the tree guide line stay where they were.
 const GLYPH_CSS: Record<(typeof STATES)[number]["glyph"], string> = {
   running: `
-    width: 11px; height: 11px; margin: 1.5px;
+    width: 0.6875rem; height: 0.6875rem; margin: 0.09375rem;
     border: 1.5px solid #60a5fa;
     border-top-color: transparent;
     border-radius: 50%;
@@ -81,15 +84,15 @@ const GLYPH_CSS: Record<(typeof STATES)[number]["glyph"], string> = {
     border: 1.25px solid var(--warning-text);
     border-radius: 50%;
     color: var(--warning-text);
-    font: 700 9px/1 system-ui, sans-serif;`,
+    font: 700 0.5625rem/1 system-ui, sans-serif;`,
   failed: `
     content: "\\00d7";
     border: 1.25px solid var(--destructive-text);
     border-radius: 50%;
     color: var(--destructive-text);
-    font: 700 11px/1 system-ui, sans-serif;`,
+    font: 700 0.6875rem/1 system-ui, sans-serif;`,
   unread: `
-    width: 6px; height: 6px; margin: 4px;
+    width: 0.375rem; height: 0.375rem; margin: 0.25rem;
     border-radius: 50%;
     background: var(--foreground);`,
 };
@@ -103,8 +106,8 @@ ${STATES.map(({ label }) => `${rowIn(label)} > a + span::before`).join(",\n")} {
   content: "";
   flex: none;
   box-sizing: border-box;
-  width: 14px;
-  height: 14px;
+  width: 0.875rem;
+  height: 0.875rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -132,7 +135,7 @@ ${ROW}:not(.bb-sidebar-selected-row):not(:hover):not(${ATTENTION_STATES}) .bb-th
 }
 
 ${idleLocalRow()} > a + span::before {
-  width: 10px; height: 10px; margin: 2px;
+  width: 0.625rem; height: 0.625rem; margin: 0.125rem;
   border-radius: 50%;
   background: conic-gradient(${RING_ARC} var(--sidebar-status-progress, 0%), ${RING_TRACK} 0);
   -webkit-mask: ${RING_MASK};
@@ -147,9 +150,9 @@ ${idleLocalRow("100")} > a + span::before {
   background: none;
   -webkit-mask: none;
   mask: none;
-  width: 14px; height: 14px; margin: 0;
+  width: 0.875rem; height: 0.875rem; margin: 0;
   color: ${RING_ARC};
-  font: 700 9px/1 system-ui, sans-serif;
+  font: 700 0.5625rem/1 system-ui, sans-serif;
 }
 
 /* Stale age sits in the empty trailing slot, so it costs no title width. It
@@ -163,7 +166,7 @@ ${STALE_ROW} > a ~ span:last-child[${AGE_ATTRIBUTE}]::before {
   top: 50%;
   translate: 0 -50%;
   pointer-events: none;
-  font: 400 11px/1 system-ui, sans-serif;
+  font: 400 0.6875rem/1 system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   color: ${RING_ARC};
 }
@@ -178,7 +181,7 @@ ${ROW}:is(:hover, :focus-within, :has([data-sidebar-hover-actions-open="true"]))
    Medium weight keeps bold for unread threads alone; brightness carries the
    hierarchy instead. */
 ${PROJECT_HEADER} {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: color-mix(in oklab, var(--foreground) 88%, transparent);
 }
@@ -200,14 +203,12 @@ ${SIDEBAR} span.w-px.bg-border-hairline {
 [data-sidebar="panel"] {
   border-right-color: color-mix(in oklab, var(--muted-foreground) 22%, var(--sidebar));
 }
-/* Cloudroom puts a child-group line's left edge at row padding + 8px, so the
-   1px line centers at +8.5px, while the 14px glyph slot above it centers at
-   +7px. Pull it back under the parent's glyph: the full 1.5px where that is
-   whole device pixels, 1px on 1x screens to stay crisp. */
-${SIDEBAR} span.w-px.bg-border-hairline { translate: -1px 0; }
-@media (min-resolution: 2dppx) {
-  ${SIDEBAR} span.w-px.bg-border-hairline { translate: -1.5px 0; }
-}
+/* Cloudroom puts a child-group line's left edge at row padding + 8px (px,
+   set inline), so the 1px line centers at +8.5px, while the 0.875rem glyph
+   slot above it centers at +0.4375rem (7px at the default size). Shift the
+   line by the difference so it sits under the parent's glyph at any root
+   font size. */
+${SIDEBAR} span.w-px.bg-border-hairline { translate: calc(0.4375rem - 8.5px) 0; }
 
 /* Empty projects: an expanded project with no thread links. Drop its
    children (the "No threads" row, or "All threads pinned" / "Threads
