@@ -160,6 +160,14 @@ ${SIDEBAR} [class*="before:bg-border-hairline"]::before,
 ${SIDEBAR} span.w-px.bg-border-hairline {
   background-color: color-mix(in oklab, var(--muted-foreground) 30%, transparent);
 }
+/* Cloudroom puts a child-group line's left edge at row padding + 8px, so the
+   1px line centers at +8.5px, while the 14px glyph slot above it centers at
+   +7px. Pull it back under the parent's glyph: the full 1.5px where that is
+   whole device pixels, 1px on 1x screens to stay crisp. */
+${SIDEBAR} span.w-px.bg-border-hairline { translate: -1px 0; }
+@media (min-resolution: 2dppx) {
+  ${SIDEBAR} span.w-px.bg-border-hairline { translate: -1.5px 0; }
+}
 
 /* Empty projects: an expanded project with no thread links. Drop its
    children (the "No threads" row, or "All threads pinned" / "Threads
