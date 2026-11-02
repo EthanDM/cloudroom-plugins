@@ -163,9 +163,9 @@ ${STALE_ROW} > a ~ span:last-child[${AGE_ATTRIBUTE}]::before {
   top: 50%;
   translate: 0 -50%;
   pointer-events: none;
-  font: 500 11px/1 system-ui, sans-serif;
+  font: 400 11px/1 system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
-  color: color-mix(in oklab, var(--muted-foreground) 55%, transparent);
+  color: ${RING_ARC};
 }
 ${ROW}:is(:hover, :focus-within, :has([data-sidebar-hover-actions-open="true"])) > a ~ span:last-child::before {
   visibility: hidden;
