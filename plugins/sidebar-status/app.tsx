@@ -176,11 +176,13 @@ ${SIDEBAR} span.w-px.bg-border-hairline { translate: -1px 0; }
 /* Empty projects: an expanded project with no thread links. Drop its
    children (the "No threads" row, or "All threads pinned" / "Threads
    unavailable", which share that slot) and dim the header. Collapsed projects
-   also have no links in the DOM, hence the aria-expanded check. */
+   also have no links in the DOM, hence the aria-expanded check. The dim is a
+   fraction of --foreground, below idle threads: dark themes set
+   --muted-foreground nearly as bright as --foreground, which would leave
+   empty headers brighter than the 88% ones. */
 ${EMPTY_PROJECT} > ${LABEL_TIER} + div { display: none; }
 ${EMPTY_PROJECT} > ${LABEL_TIER} {
-  font-weight: 500;
-  color: var(--muted-foreground);
+  color: color-mix(in oklab, var(--foreground) 50%, transparent);
 }
 `;
 
