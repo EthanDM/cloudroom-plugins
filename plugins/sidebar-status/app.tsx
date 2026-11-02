@@ -137,12 +137,13 @@ ${idleLocalRow("100")} > a + span::before {
   font: 700 9px/1 system-ui, sans-serif;
 }
 
-/* Project headers outrank idle threads (Cloudroom draws them 12px and dim)
-   but stay below unread threads, which are the only full-white bold rows. */
+/* Project headers outrank idle threads (Cloudroom draws them 12px and dim).
+   Medium weight keeps bold for unread threads alone; brightness carries the
+   hierarchy instead. */
 ${PROJECT_HEADER} {
   font-size: 13px;
-  font-weight: 600;
-  color: color-mix(in oklab, var(--foreground) 75%, transparent);
+  font-weight: 500;
+  color: color-mix(in oklab, var(--foreground) 88%, transparent);
 }
 ${PROJECT_HEADER} button[aria-expanded].bb-sidebar-hover-actions {
   opacity: 0.45;

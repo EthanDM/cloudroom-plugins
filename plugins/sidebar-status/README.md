@@ -16,7 +16,7 @@ The % is Cloudroom's AI-written purpose estimate, so it can lag or be optimistic
 
 Hierarchy fixes:
 
-- **Project headers** go from Cloudroom's 12px dim grey to 13px semibold at 75% of the text color (brighter than idle threads, below unread ones), with their collapse chevron always faintly visible.
+- **Project headers** go from Cloudroom's 12px dim grey to 13px medium weight at 88% of the text color: brighter than idle threads, and not bold, so bold stays reserved for unread threads, with their collapse chevron always faintly visible.
 - **Idle threads** dim to about 60% so headers and threads that need you lead. Hovering or selecting a row restores full color.
 - **Empty projects** (expanded, with no thread rows) lose the "No threads" row and get a dimmed header. This also hides "All threads pinned" and "Threads unavailable", which use the same slot. Collapsed projects keep their normal header.
 
