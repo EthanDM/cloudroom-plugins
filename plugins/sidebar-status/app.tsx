@@ -28,7 +28,7 @@ const rowIn = (label: string) => `${ROW}:has(> a ~ span:last-child [aria-label="
 const ATTENTION_STATES = STATES.map(({ label }) => `:has(> a ~ span:last-child [aria-label="${label}"])`).join(", ");
 
 // Idle Local threads show a muted ring filled to their Cloudroom purpose
-// "% done". The ThreadProgressRings overlay writes a 10-step bucket ("none",
+// "% done". The ThreadRowHints overlay writes a 10-step bucket ("none",
 // "0" … "100") onto each row container; CSS draws the ring from it.
 const PROGRESS_ATTRIBUTE = "data-sidebar-status-progress";
 const PROGRESS_POLL_MS = 60_000;
@@ -40,6 +40,17 @@ const RING_ARC = "color-mix(in oklab, var(--muted-foreground) 38%, transparent)"
 const RING_MASK = "radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px))";
 const idleLocalRow = (progress = "") =>
   `${ROW}[${PROGRESS_ATTRIBUTE}${progress && `="${progress}"`}]:not(${ATTENTION_STATES}):has(> a + span > [aria-label="Local thread"])`;
+
+// Threads idle for STALE_AFTER_DAYS or more show their age ("4d", "2w") in
+// the trailing slot, a nudge to archive. The overlay writes the label onto
+// the trailing span, since CSS attr() only reads the element it draws on.
+const AGE_ATTRIBUTE = "data-sidebar-status-age";
+const STALE_AFTER_DAYS = 3;
+const DAY_MS = 86_400_000;
+// The trailing slot is empty on idle rows: Cloudroom renders a
+// [data-sidebar-thread-trailing-indicator] there only for other states, and
+// swaps the slot for a shortcut pill while a modifier key is held.
+const STALE_ROW = `${ROW}:not(${ATTENTION_STATES}):not(:has([data-sidebar-thread-trailing-indicator])):has(> a ~ span:last-child [data-sidebar-hover-actions-mobile])`;
 
 const SIDEBAR = ":is([data-sidebar-sticky-project-item], [data-sidebar-section-id])";
 const LABEL_TIER = '[data-sidebar-sticky-tier="label"]';
@@ -141,6 +152,28 @@ ${idleLocalRow("100")} > a + span::before {
   font: 700 9px/1 system-ui, sans-serif;
 }
 
+/* Stale age sits in the empty trailing slot, so it costs no title width. It
+   gives way to the hover actions, and is left off phones, where the actions
+   menu is always shown in that slot. */
+${STALE_ROW} > a ~ span:last-child[${AGE_ATTRIBUTE}] { position: relative; }
+${STALE_ROW} > a ~ span:last-child[${AGE_ATTRIBUTE}]::before {
+  content: attr(${AGE_ATTRIBUTE});
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  translate: 0 -50%;
+  pointer-events: none;
+  font: 500 11px/1 system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in oklab, var(--muted-foreground) 55%, transparent);
+}
+${ROW}:is(:hover, :focus-within, :has([data-sidebar-hover-actions-open="true"])) > a ~ span:last-child::before {
+  visibility: hidden;
+}
+@media (max-width: 767px) and (pointer: coarse) {
+  ${STALE_ROW} > a ~ span:last-child[${AGE_ATTRIBUTE}]::before { content: none; }
+}
+
 /* Project headers outrank idle threads (Cloudroom draws them 12px and dim).
    Medium weight keeps bold for unread threads alone; brightness carries the
    hierarchy instead. */
@@ -193,16 +226,34 @@ ${EMPTY_PROJECT} > ${LABEL_TIER} {
 ${EMPTY_PROJECT_ITEM} + ${EMPTY_PROJECT_ITEM} { margin-top: calc(4px - 1rem); }
 `;
 
-type ThreadProgress = ReadonlyMap<string, number | null>;
+interface SidebarThread {
+  percent: number | null;
+  lastActiveAt: number;
+}
+type SidebarThreads = ReadonlyMap<string, SidebarThread>;
 
 function progressBucket(percent: number | null): string {
   return percent === null ? "none" : String(Math.round(percent / 10) * 10);
 }
 
-/** Purpose percent per open thread, refreshed every minute while the page is visible. */
-function useThreadProgress(): ThreadProgress {
+/** "4d", "2w", "3mo" once a thread has been idle STALE_AFTER_DAYS; null before. */
+function staleAge(lastActiveAt: number, now: number): string | null {
+  const days = Math.floor((now - lastActiveAt) / DAY_MS);
+  if (days < STALE_AFTER_DAYS) return null;
+  if (days < 14) return `${days}d`;
+  if (days < 60) return `${Math.floor(days / 7)}w`;
+  return `${Math.floor(days / 30)}mo`;
+}
+
+function setOrRemoveAttribute(element: Element, name: string, value: string | null): void {
+  if (value === null) element.removeAttribute(name);
+  else if (element.getAttribute(name) !== value) element.setAttribute(name, value);
+}
+
+/** Progress and last activity per open thread, refreshed every minute while the page is visible. */
+function useSidebarThreads(): SidebarThreads {
   const rpc = useRpc<typeof rpcContract>();
-  const [progress, setProgress] = useState<ThreadProgress>(() => new Map());
+  const [threads, setThreads] = useState<SidebarThreads>(() => new Map());
 
   useEffect(() => {
     let cancelled = false;
@@ -210,12 +261,12 @@ function useThreadProgress(): ThreadProgress {
     const load = () => {
       if (document.hidden) return;
       const request = ++latestRequest;
-      rpc.call("threadProgress").then(
-        ({ threads }) => {
+      rpc.call("sidebarThreads").then(
+        (result) => {
           if (cancelled || request !== latestRequest) return;
-          setProgress(new Map(threads.map((thread) => [thread.id, thread.percent])));
+          setThreads(new Map(result.threads.map(({ id, ...thread }) => [id, thread])));
         },
-        // Keep the last rings; the next poll retries.
+        // Keep the last rings and ages; the next poll retries.
         () => {},
       );
     };
@@ -229,27 +280,28 @@ function useThreadProgress(): ThreadProgress {
     };
   }, [rpc]);
 
-  return progress;
+  return threads;
 }
 
 /**
- * Tags sidebar row containers with their progress bucket. Rows remount as the
- * list changes, so a MutationObserver re-tags after sidebar DOM changes.
- * React leaves attributes it doesn't own alone on rows it keeps.
+ * Tags each sidebar row container with its progress bucket, and its trailing
+ * span with its stale age. Rows remount as the list changes, so a
+ * MutationObserver re-tags after sidebar DOM changes. React leaves attributes
+ * it doesn't own alone on rows it keeps.
  */
-function useRowProgressAttributes(progress: ThreadProgress): void {
+function useRowAttributes(threads: SidebarThreads): void {
   useEffect(() => {
     const tagRows = () => {
+      const now = Date.now();
       for (const link of document.querySelectorAll<HTMLElement>("a[data-sidebar-thread-id]")) {
         const row = link.parentElement;
-        const threadId = link.dataset.sidebarThreadId;
-        if (!row || !threadId) continue;
-        if (!progress.has(threadId)) {
-          row.removeAttribute(PROGRESS_ATTRIBUTE);
-          continue;
+        const thread = threads.get(link.dataset.sidebarThreadId ?? "");
+        if (!row) continue;
+        setOrRemoveAttribute(row, PROGRESS_ATTRIBUTE, thread ? progressBucket(thread.percent) : null);
+        const trailing = row.lastElementChild;
+        if (trailing && trailing !== link) {
+          setOrRemoveAttribute(trailing, AGE_ATTRIBUTE, thread ? staleAge(thread.lastActiveAt, now) : null);
         }
-        const bucket = progressBucket(progress.get(threadId) ?? null);
-        if (row.getAttribute(PROGRESS_ATTRIBUTE) !== bucket) row.setAttribute(PROGRESS_ATTRIBUTE, bucket);
       }
     };
 
@@ -269,18 +321,21 @@ function useRowProgressAttributes(progress: ThreadProgress): void {
     return () => {
       observer.disconnect();
       cancelAnimationFrame(frame);
-      for (const row of document.querySelectorAll(`[${PROGRESS_ATTRIBUTE}]`)) row.removeAttribute(PROGRESS_ATTRIBUTE);
+      for (const element of document.querySelectorAll(`[${PROGRESS_ATTRIBUTE}], [${AGE_ATTRIBUTE}]`)) {
+        element.removeAttribute(PROGRESS_ATTRIBUTE);
+        element.removeAttribute(AGE_ATTRIBUTE);
+      }
     };
-  }, [progress]);
+  }, [threads]);
 }
 
-function ThreadProgressRings() {
-  useRowProgressAttributes(useThreadProgress());
+function ThreadRowHints() {
+  useRowAttributes(useSidebarThreads());
   return null;
 }
 
 export default definePluginApp((app) => {
-  app.slots.experimental_appOverlay({ id: "thread-progress-rings", component: ThreadProgressRings });
+  app.slots.experimental_appOverlay({ id: "thread-progress-rings", component: ThreadRowHints });
   app.contentScripts.register({
     id: "sidebar-status",
     mount: () => {

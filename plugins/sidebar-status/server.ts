@@ -4,11 +4,18 @@ import { z } from "zod";
 const PAGE_SIZE = 200;
 
 export const rpcContract = defineRpcContract({
-  threadProgress: {
+  sidebarThreads: {
     input: z.null(),
     // percent is null for threads Cloudroom hasn't summarized yet.
+    // lastActiveAt is Cloudroom's latestAttentionAt, in epoch milliseconds.
     output: z.object({
-      threads: z.array(z.object({ id: z.string(), percent: z.number().int().min(0).max(100).nullable() })),
+      threads: z.array(
+        z.object({
+          id: z.string(),
+          percent: z.number().int().min(0).max(100).nullable(),
+          lastActiveAt: z.number(),
+        }),
+      ),
     }),
   },
 });
@@ -22,11 +29,11 @@ function purposePercent(thread: object): number | null {
 
 export default function plugin(bb: BbPluginApi) {
   bb.rpc.register(rpcContract, {
-    async threadProgress() {
-      const threads: { id: string; percent: number | null }[] = [];
+    async sidebarThreads() {
+      const threads: { id: string; percent: number | null; lastActiveAt: number }[] = [];
       for (let offset = 0; ; offset += PAGE_SIZE) {
         const page = await bb.sdk.threads.list({ archived: false, limit: PAGE_SIZE, offset });
-        for (const thread of page) threads.push({ id: thread.id, percent: purposePercent(thread) });
+        for (const thread of page) threads.push({ id: thread.id, percent: purposePercent(thread), lastActiveAt: thread.latestAttentionAt });
         if (page.length < PAGE_SIZE) return { threads };
       }
     },
