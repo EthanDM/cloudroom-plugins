@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { definePluginApp, useRpc } from "@get-bb/plugin-sdk/app";
 import type { rpcContract } from "./server";
+import { startCollapseMotion } from "./collapse-motion";
 
 // Moves a thread's status from the trailing indicator into the leading
 // Local/Cloud icon slot, and bolds unread threads.
@@ -255,4 +256,5 @@ export default definePluginApp((app) => {
       return () => style.remove();
     },
   });
+  app.contentScripts.register({ id: "collapse-motion", mount: startCollapseMotion });
 });

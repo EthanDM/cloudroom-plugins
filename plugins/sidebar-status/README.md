@@ -20,6 +20,8 @@ Hierarchy fixes:
 - **Idle threads** dim to about 60% so headers and threads that need you lead. Hovering or selecting a row restores full color.
 - **Empty projects** (expanded, with no thread rows) lose the "No threads" row and get a dimmed header. This also hides "All threads pinned" and "Threads unavailable", which use the same slot. Collapsed projects keep their normal header.
 
+Motion: expanding or collapsing a project slides its thread list open or closed (about 150–260ms, longer lists take slightly longer). Cloudroom mounts and unmounts the list instead of hiding it, so collapse briefly re-inserts the removed list as an inert, non-clickable copy and shrinks it away (`collapse-motion.ts`). Off when the system asks for reduced motion. Child-thread groups under a parent thread don't animate.
+
 Idle Cloud threads keep their cloud icon. Other states (drafts, queued messages, plan mode, background work) keep Cloudroom's own indicator on the right. The 14px slot is kept, so indentation doesn't change.
 
 Assumes Settings → Appearance → Harness icons is Off (the default). Matches Cloudroom v139 markup: the status `aria-label`s ("Thread working", "Thread needs user input", "Unread thread failed", "Unread thread succeeded"), `[aria-label="Local thread"]`, `.bb-thread-title`, `.bb-sidebar-selected-row`, and the project header's `[data-sidebar-sticky-project-item] > [data-sidebar-sticky-group] > [data-sidebar-sticky-tier="label"]`. If one changes, that state falls back to Cloudroom's own look.
