@@ -8,7 +8,7 @@
   },
   "bb": {
     "name": "Sidebar Status",
-    "description": "Shows each thread's status in the left icon slot and bolds unread threads.",
+    "description": "Thread status in the left icon slot, bold unread threads, and a clearer project/thread hierarchy.",
     "branding": {
       "icon": "BellDot"
     },

@@ -22,6 +22,11 @@ const STATES = [
 ] as const;
 
 const rowIn = (label: string) => `${ROW}:has(> a ~ span:last-child [aria-label="${label}"])`;
+const ATTENTION_STATES = STATES.map(({ label }) => `:has(> a ~ span:last-child [aria-label="${label}"])`).join(", ");
+
+const LABEL_TIER = '[data-sidebar-sticky-tier="label"]';
+const PROJECT_SECTION = "[data-sidebar-sticky-project-item] > [data-sidebar-section-id]";
+const PROJECT_HEADER = `${PROJECT_SECTION} > ${LABEL_TIER}`;
 
 // Every glyph fills the 14px slot the 3.5-size location icon used, so
 // indentation and the tree guide line stay where they were.
@@ -80,6 +85,31 @@ ${STATES.map(({ label, glyph }) => `${rowIn(label)} > a + span::before {${GLYPH_
 ${ROW}:has(> a ~ span:last-child [aria-label^="Unread thread"]) .bb-thread-title {
   font-weight: 600;
   color: var(--color-foreground);
+}
+
+/* Idle threads recede so projects and threads that need attention lead. */
+${ROW}:not(.bb-sidebar-selected-row):not(:hover):not(${ATTENTION_STATES}) .bb-thread-title {
+  color: color-mix(in oklab, var(--color-sidebar-foreground) 62%, transparent);
+}
+
+/* Project headers outrank their threads: Cloudroom draws them 12px and dim. */
+${PROJECT_HEADER} {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+${PROJECT_HEADER} button[aria-expanded].bb-sidebar-hover-actions {
+  opacity: 0.45;
+  pointer-events: auto;
+}
+
+/* Empty projects: drop the "No threads" row and dim the header. The empty
+   state is the only icon + paragraph pair in a project's children, so this
+   also hides "All threads pinned" and "Threads unavailable". */
+${PROJECT_HEADER} + div:has(> div > [data-icon-root] + p) { display: none; }
+${PROJECT_SECTION}:has(> ${LABEL_TIER} + div > div > [data-icon-root] + p) > ${LABEL_TIER} {
+  font-weight: 500;
+  color: var(--color-muted-foreground);
 }
 `;
 

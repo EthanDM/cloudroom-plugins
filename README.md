@@ -7,7 +7,7 @@ Personal Cloudroom tweaks. Each plugin lives in `plugins/<name>/` and is listed 
 | `hide-plan-card` | Hides the "Free plan" card in the sidebar. |
 | `thread-ids` | Palette commands to copy the open thread's ID, `@thread:` mention, or link. |
 | `mobile-fixes` | Phone only: safe-area padding in picker sheets, hides Plugins and Skills nav rows. |
-| `sidebar-status` | Thread status (running, needs you, failed, unread) in the left icon slot; bold unread titles. |
+| `sidebar-status` | Thread status in the left icon slot, bold unread titles, stronger project headers, dimmed idle threads, no "No threads" rows. |
 | `keep-spinners` | Desktop app: keeps running-agent animations moving when the window loses focus. |
 
 ## Install or update on a Cloudroom server
