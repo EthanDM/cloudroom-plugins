@@ -1,0 +1,106 @@
+{
+  "hide-plan-card": [
+    {
+      "id": "promo-visibility",
+      "description": "Available promotional placements are hidden; absent placements are untested."
+    },
+    {
+      "id": "error-visibility",
+      "description": "Cloud queue, usage limit, disk/connection errors and billing controls stay visible."
+    },
+    {
+      "id": "promo-fixtures",
+      "description": "All five promo placements and copy variants hide against matching shipped markup, including late insertion."
+    }
+  ],
+  "thread-ids": [
+    {
+      "id": "palette-registration",
+      "description": "All three copy commands appear in the palette for an open thread."
+    },
+    {
+      "id": "clipboard-values",
+      "description": "Copy ID, mention and link from a known thread; verify values without exposing preexisting clipboard contents."
+    }
+  ],
+  "mobile-fixes": [
+    {
+      "id": "mobile-navigation",
+      "description": "At phone width, Plugins and Skills are hidden; desktop keeps them."
+    },
+    {
+      "id": "picker-safe-area",
+      "description": "Open Environment picker on a real phone and verify home-indicator clearance without doubled padding."
+    }
+  ],
+  "keep-spinners": [
+    {
+      "id": "blur-attribute",
+      "description": "While mounted, adding data-window-blurred to the root is cleared; disposal stops observing."
+    },
+    {
+      "id": "desktop-background",
+      "description": "In the desktop app, a real running spinner keeps animating while the window is unfocused."
+    }
+  ],
+  "sidebar-status": [
+    {
+      "id": "sidebar-colors",
+      "description": "Unread dot and attention glyphs are visible under actual theme variables, light and dark."
+    },
+    {
+      "id": "empty-error-transition",
+      "description": "No threads and All threads pinned hide/dim; Threads unavailable stays visible and undimmed, including in-place text changes."
+    },
+    {
+      "id": "sidebar-progress",
+      "description": "Idle/complete/unknown progress, stale ages, cloud and active states, hover actions and remounts behave correctly."
+    },
+    {
+      "id": "sidebar-motion",
+      "description": "Project expand/collapse and guide lines work at 100%/110%, including reduced motion and rapid toggles."
+    }
+  ],
+  "ui-scale": [
+    {
+      "id": "desktop-scale",
+      "description": "At desktop width and browser zoom 100%, root size is 110% with no horizontal/full-height overflow."
+    },
+    {
+      "id": "mobile-scale",
+      "description": "At phone width with a coarse pointer, the plugin leaves the base size alone; inspect layout and picker alignment."
+    }
+  ],
+  "server-identity": [
+    {
+      "id": "server-badge",
+      "description": "Exactly the existing Connect button is marked with backend hostname, expected dot color and hover text; no extra row."
+    },
+    {
+      "id": "badge-alert",
+      "description": "Connect errors remain visible; server dot moves clear of alert badge; click and cleanup still work."
+    },
+    {
+      "id": "other-server",
+      "description": "On the other independent server, identity comes from that backend, not the viewing device."
+    }
+  ],
+  "compact-navigation": [
+    {
+      "id": "compact-layout",
+      "description": "Visible native actions share one row when they fit; extra destinations wrap; no overflow."
+    },
+    {
+      "id": "navigation-interactions",
+      "description": "Native actions, More/Search, full-size Customize, modifier/split behavior and long-press context menus work."
+    },
+    {
+      "id": "navigation-accessibility",
+      "description": "Hover/focus tooltips and accessible names work without duplication; touch targets fit."
+    },
+    {
+      "id": "navigation-cleanup",
+      "description": "Route/remount/text updates work; disposal removes owned spans, attributes, observer and CSS."
+    }
+  ]
+}

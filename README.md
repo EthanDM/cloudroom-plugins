@@ -27,3 +27,15 @@ cd plugins && room-cli plugin new <name> && mv bb-plugin-<name> <name>
 
 Add it to `.bb/plugins.json`, then `room-cli plugin build` inside it before pushing.
 UI tweaks that match app markup can break on Cloudroom updates; prefer accessible labels over class names.
+
+## Check after a Cloudroom update
+
+Use the `cloudroom-plugin-check` skill. Its repeatable inventory/build runner,
+current-view browser probes, and required behavior matrix are documented in
+[docs/plugin-checks.md](docs/plugin-checks.md).
+
+```sh
+python3 scripts/check-plugins.py --build --output /tmp/plugin-check/inventory.json
+```
+
+Exit 2 means behavior remains untested; compilation alone does not prove health.
