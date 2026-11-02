@@ -1,4 +1,6 @@
-import { definePluginApp } from "@get-bb/plugin-sdk/app";
+import { useEffect, useState } from "react";
+import { definePluginApp, useRpc } from "@get-bb/plugin-sdk/app";
+import type { rpcContract } from "./server";
 
 // Moves a thread's status from the trailing indicator into the leading
 // Local/Cloud icon slot, and bolds unread threads.
@@ -23,6 +25,15 @@ const STATES = [
 
 const rowIn = (label: string) => `${ROW}:has(> a ~ span:last-child [aria-label="${label}"])`;
 const ATTENTION_STATES = STATES.map(({ label }) => `:has(> a ~ span:last-child [aria-label="${label}"])`).join(", ");
+
+// Idle Local threads show a muted ring filled to their Cloudroom purpose
+// "% done". The ThreadProgressRings overlay writes a 10-step bucket ("none",
+// "0" … "100") onto each row container; CSS draws the ring from it.
+const PROGRESS_ATTRIBUTE = "data-sidebar-status-progress";
+const PROGRESS_POLL_MS = 60_000;
+const RING_COLOR = "color-mix(in oklab, var(--muted-foreground) 75%, transparent)";
+const idleLocalRow = (progress = "") =>
+  `${ROW}[${PROGRESS_ATTRIBUTE}${progress && `="${progress}"`}]:not(${ATTENTION_STATES}):has(> a + span > [aria-label="Local thread"])`;
 
 const LABEL_TIER = '[data-sidebar-sticky-tier="label"]';
 const PROJECT_SECTION = "[data-sidebar-sticky-project-item] > [data-sidebar-section-id]";
@@ -96,6 +107,22 @@ ${ROW}:not(.bb-sidebar-selected-row):not(:hover):not(${ATTENTION_STATES}) .bb-th
   color: color-mix(in oklab, var(--sidebar-foreground) 62%, transparent);
 }
 
+${idleLocalRow()} > a + span::before {
+  width: 10px; height: 10px; margin: 2px;
+  border: 1.25px solid ${RING_COLOR};
+  border-radius: 50%;
+}
+${[10, 20, 30, 40, 50, 60, 70, 80, 90]
+  .map((percent) => `${idleLocalRow(String(percent))} > a + span::before { background: conic-gradient(${RING_COLOR} ${percent}%, transparent 0); }`)
+  .join("\n")}
+/* Done: a filled ring with a check, a hint that the thread can be archived. */
+${idleLocalRow("100")} > a + span::before {
+  content: "\\2713";
+  background: ${RING_COLOR};
+  color: var(--sidebar, var(--background));
+  font: 800 7px/1 system-ui, sans-serif;
+}
+
 /* Project headers outrank their threads: Cloudroom draws them 12px and dim. */
 ${PROJECT_HEADER} {
   font-size: 13px;
@@ -117,7 +144,94 @@ ${PROJECT_SECTION}:has(> ${LABEL_TIER} + div > div > [data-icon-root] + p) > ${L
 }
 `;
 
+type ThreadProgress = ReadonlyMap<string, number | null>;
+
+function progressBucket(percent: number | null): string {
+  return percent === null ? "none" : String(Math.round(percent / 10) * 10);
+}
+
+/** Purpose percent per open thread, refreshed every minute while the page is visible. */
+function useThreadProgress(): ThreadProgress {
+  const rpc = useRpc<typeof rpcContract>();
+  const [progress, setProgress] = useState<ThreadProgress>(() => new Map());
+
+  useEffect(() => {
+    let cancelled = false;
+    let latestRequest = 0;
+    const load = () => {
+      if (document.hidden) return;
+      const request = ++latestRequest;
+      rpc.call("threadProgress").then(
+        ({ threads }) => {
+          if (cancelled || request !== latestRequest) return;
+          setProgress(new Map(threads.map((thread) => [thread.id, thread.percent])));
+        },
+        // Keep the last rings; the next poll retries.
+        () => {},
+      );
+    };
+    load();
+    const timer = window.setInterval(load, PROGRESS_POLL_MS);
+    document.addEventListener("visibilitychange", load);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", load);
+    };
+  }, [rpc]);
+
+  return progress;
+}
+
+/**
+ * Tags sidebar row containers with their progress bucket. Rows remount as the
+ * list changes, so a MutationObserver re-tags after sidebar DOM changes.
+ * React leaves attributes it doesn't own alone on rows it keeps.
+ */
+function useRowProgressAttributes(progress: ThreadProgress): void {
+  useEffect(() => {
+    const tagRows = () => {
+      for (const link of document.querySelectorAll<HTMLElement>("a[data-sidebar-thread-id]")) {
+        const row = link.parentElement;
+        const threadId = link.dataset.sidebarThreadId;
+        if (!row || !threadId) continue;
+        if (!progress.has(threadId)) {
+          row.removeAttribute(PROGRESS_ATTRIBUTE);
+          continue;
+        }
+        const bucket = progressBucket(progress.get(threadId) ?? null);
+        if (row.getAttribute(PROGRESS_ATTRIBUTE) !== bucket) row.setAttribute(PROGRESS_ATTRIBUTE, bucket);
+      }
+    };
+
+    let frame = 0;
+    const observer = new MutationObserver((records) => {
+      if (frame) return;
+      const touchesSidebar = records.some(
+        (record) => record.target instanceof Element && record.target.closest("[data-sidebar-section-id]"),
+      );
+      if (touchesSidebar) frame = requestAnimationFrame(() => {
+        frame = 0;
+        tagRows();
+      });
+    });
+    tagRows();
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+      for (const row of document.querySelectorAll(`[${PROGRESS_ATTRIBUTE}]`)) row.removeAttribute(PROGRESS_ATTRIBUTE);
+    };
+  }, [progress]);
+}
+
+function ThreadProgressRings() {
+  useRowProgressAttributes(useThreadProgress());
+  return null;
+}
+
 export default definePluginApp((app) => {
+  app.slots.experimental_appOverlay({ id: "thread-progress-rings", component: ThreadProgressRings });
   app.contentScripts.register({
     id: "sidebar-status",
     mount: () => {

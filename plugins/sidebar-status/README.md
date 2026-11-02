@@ -8,7 +8,11 @@ Puts each thread's status where the Local/Cloud icon was, and bolds unread threa
 | Amber `?` | Needs you |
 | Red `×` | Failed, unread |
 | White dot | Done, unread |
-| Empty | Idle Local thread |
+| Muted ring, filled to the % | Idle Local thread: Cloudroom's purpose "% done" (the hover card's bar) |
+| Muted ring with a check | Idle and 100% done, a hint it can be archived |
+| Empty ring | Idle, no purpose summary yet |
+
+The % is Cloudroom's AI-written purpose estimate, so it can lag or be optimistic. A small app overlay fetches it from the plugin's server code (`bb.sdk.threads.list`) every minute while the page is visible, and tags each row with a 10% bucket for the CSS. The SDK's thread type doesn't declare `purpose` yet, so the server reads it defensively; if Cloudroom drops the field, rings go empty.
 
 Hierarchy fixes:
 

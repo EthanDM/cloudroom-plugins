@@ -8,19 +8,23 @@
   },
   "bb": {
     "name": "Sidebar Status",
-    "description": "Thread status in the left icon slot, bold unread threads, and a clearer project/thread hierarchy.",
+    "description": "Thread status and progress rings in the left icon slot, bold unread threads, and a clearer project/thread hierarchy.",
     "branding": {
       "icon": "BellDot"
     },
     "server": "./server.ts",
     "app": "./app.tsx"
   },
-  "dependencies": {},
+  "dependencies": {
+    "zod": "^4.6.7"
+  },
   "devDependencies": {
     "@get-bb/plugin-sdk": "0.6.49",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "hono": "^4.13.16",
     "typescript": "^5.7.0"
   }
 }
