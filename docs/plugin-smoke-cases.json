@@ -15,6 +15,10 @@
   ],
   "thread-ids": [
     {
+      "id": "sidebar-copy-id",
+      "description": "Sidebar dropdown/right-click/phone long-press copy the selected row ID, not the open chat or name; keyboard selection, closing, failure feedback, remounts and cleanup work."
+    },
+    {
       "id": "palette-registration",
       "description": "All three copy commands appear in the palette for an open thread."
     },

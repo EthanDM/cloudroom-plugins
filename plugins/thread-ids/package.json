@@ -8,7 +8,7 @@
   },
   "bb": {
     "name": "Thread IDs",
-    "description": "Palette commands to copy the open thread's ID, mention tag, or link.",
+    "description": "Copy thread IDs from sidebar menus, plus palette commands for IDs, mentions, and links.",
     "branding": {
       "icon": "Link"
     },

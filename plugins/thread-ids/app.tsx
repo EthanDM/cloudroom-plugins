@@ -1,6 +1,7 @@
 import { definePluginApp, experimental_copyToClipboard } from "@get-bb/plugin-sdk/app";
 import type { PluginCommandContext } from "@get-bb/plugin-sdk/app";
 import { toast } from "sonner";
+import { mountSidebarCopyId } from "./sidebar-copy-id";
 
 interface CopyCommand {
   id: string;
@@ -18,12 +19,16 @@ const COPY_COMMANDS: CopyCommand[] = [
 
 async function copyFromThread(command: CopyCommand, { threadId }: PluginCommandContext): Promise<void> {
   if (!threadId) return;
-  const text = command.text(threadId);
+  await copyText(command.text(threadId));
+}
+
+async function copyText(text: string): Promise<void> {
   if (await experimental_copyToClipboard({ text })) toast.success(`Copied ${text}`);
   else toast.error("Couldn't copy to the clipboard");
 }
 
 export default definePluginApp((app) => {
+  app.contentScripts.register({ id: "sidebar-copy-thread-id", mount: () => mountSidebarCopyId(copyText) });
   for (const command of COPY_COMMANDS) {
     app.commands.register({
       id: command.id,

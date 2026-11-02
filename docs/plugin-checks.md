@@ -89,7 +89,10 @@ After installing a fix, capture new browser evidence for the new bundle.
   sidebar preferences at phone and desktop widths. Use a real coarse-pointer phone
   for mobile baseline and picker
   home-indicator clearance; headless `env(safe-area-inset-bottom)=0` is insufficient.
-- **thread-ids:** use a known open thread and verify all three command values.
+- **thread-ids:** open a different row's sidebar menu and verify Copy thread ID
+  copies that row for dropdown, keyboard, right-click and phone long-press. Verify
+  closing, failure feedback and cleanup. Use a known open thread and verify all
+  three palette command values.
   Avoid exposing or reading existing clipboard contents. Command registration
   alone is insufficient; mark copy behavior untested if it cannot be exercised.
 - **keep-spinners:** test observer cleanup in a fixture and a real running spinner
