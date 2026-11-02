@@ -18,7 +18,7 @@ Hierarchy fixes:
 
 - **Project headers** go from Cloudroom's 12px dim grey to 13px semibold in the full text color, with their collapse chevron always faintly visible.
 - **Idle threads** dim to about 60% so headers and threads that need you lead. Hovering or selecting a row restores full color.
-- **Empty projects** lose the "No threads" row and get a dimmed header. This also hides "All threads pinned" and "Threads unavailable", which use the same empty-state row.
+- **Empty projects** (expanded, with no thread rows) lose the "No threads" row and get a dimmed header. This also hides "All threads pinned" and "Threads unavailable", which use the same slot. Collapsed projects keep their normal header.
 
 Idle Cloud threads keep their cloud icon. Other states (drafts, queued messages, plan mode, background work) keep Cloudroom's own indicator on the right. The 14px slot is kept, so indentation doesn't change.
 

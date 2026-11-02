@@ -45,6 +45,7 @@ const LABEL_TIER = '[data-sidebar-sticky-tier="label"]';
 // so match the sticky group directly under the project item.
 const PROJECT_SECTION = "[data-sidebar-sticky-project-item] > [data-sidebar-sticky-group]";
 const PROJECT_HEADER = `${PROJECT_SECTION} > ${LABEL_TIER}`;
+const EMPTY_PROJECT = `${PROJECT_SECTION}:has(> ${LABEL_TIER} button[aria-expanded="true"]):not(:has(a[data-sidebar-thread-id]))`;
 
 // Colors use Cloudroom's raw theme variables (--foreground, --warning-text…).
 // Its Tailwind `@theme inline` block compiles --color-* names away, so those
@@ -146,11 +147,12 @@ ${PROJECT_HEADER} button[aria-expanded].bb-sidebar-hover-actions {
   pointer-events: auto;
 }
 
-/* Empty projects: drop the "No threads" row and dim the header. The empty
-   state is the only icon + paragraph pair in a project's children, so this
-   also hides "All threads pinned" and "Threads unavailable". */
-${PROJECT_HEADER} + div:has(> div > [data-icon-root] + p) { display: none; }
-${PROJECT_SECTION}:has(> ${LABEL_TIER} + div > div > [data-icon-root] + p) > ${LABEL_TIER} {
+/* Empty projects: an expanded project with no thread links. Drop its
+   children (the "No threads" row, or "All threads pinned" / "Threads
+   unavailable", which share that slot) and dim the header. Collapsed projects
+   also have no links in the DOM, hence the aria-expanded check. */
+${EMPTY_PROJECT} > ${LABEL_TIER} + div { display: none; }
+${EMPTY_PROJECT} > ${LABEL_TIER} {
   font-weight: 500;
   color: var(--muted-foreground);
 }
