@@ -4,7 +4,9 @@ import { definePluginApp } from "@get-bb/plugin-sdk/app";
 // (a row's container directly holds its a[data-sidebar-thread-id] link) so the
 // thread palette keeps its icons. Cloud and teleport icons stay visible. If
 // Cloudroom renames the label, the laptop icon reappears.
-const HIDE_LOCAL_ICON_CSS = ':has(> a[data-sidebar-thread-id]) [aria-label="Local thread"] { display: none !important; }';
+// visibility, not display: the icon's slot is what indents titles under their
+// project and keeps child threads clear of the tree guide line.
+const HIDE_LOCAL_ICON_CSS = ':has(> a[data-sidebar-thread-id]) [aria-label="Local thread"] { visibility: hidden !important; }';
 
 export default definePluginApp((app) => {
   app.contentScripts.register({
