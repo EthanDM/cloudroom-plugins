@@ -8,7 +8,7 @@
   },
   "bb": {
     "name": "Server Identity",
-    "description": "Shows this Cloudroom server\u2019s machine name above the sidebar navigation.",
+    "description": "Marks the Connect footer icon with this Cloudroom server\u2019s identity.",
     "branding": {
       "icon": "Monitor"
     },

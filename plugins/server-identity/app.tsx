@@ -1,41 +1,39 @@
 import { definePluginApp } from "@get-bb/plugin-sdk/app";
 
-const HEADER = '[data-testid="app-sidebar-top-reserve-row"]';
-const LABEL_ATTRIBUTE = "data-server-identity";
+const CONNECT_BUTTON = '[data-testid="plugin-sidebar-footer-item-connect-remote-access"]';
+const IDENTITY_ATTRIBUTE = "data-server-identity";
 const CSS = `
-[${LABEL_ATTRIBUTE}] {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  flex-shrink: 0;
-  min-width: 0;
-  height: 1.25rem;
-  margin: 0 0.875rem 0.125rem;
-  color: color-mix(in srgb, var(--foreground) 70%, transparent);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  line-height: 1;
-  user-select: none;
-}
-[${LABEL_ATTRIBUTE}]::before {
+[${IDENTITY_ATTRIBUTE}]::after {
   content: "";
-  flex-shrink: 0;
+  position: absolute;
+  pointer-events: none;
+  top: 0.125rem;
+  right: 0.125rem;
   width: 0.3125rem;
   height: 0.3125rem;
   border-radius: 50%;
   background: color-mix(in srgb, var(--foreground) 35%, transparent);
+  box-shadow: 0 0 0 1px var(--sidebar, var(--background));
 }
-[${LABEL_ATTRIBUTE}="edm-node"]::before { background: #40afff; }
-[${LABEL_ATTRIBUTE}="edm-mbp"]::before { background: #c5f000; }
-[${LABEL_ATTRIBUTE}] > span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+[${IDENTITY_ATTRIBUTE}="edm-node"]::after { background: #40afff; }
+[${IDENTITY_ATTRIBUTE}="edm-mbp"]::after { background: #c5f000; }
+/* Connect owns the upper-right corner when it has an error to report. */
+[${IDENTITY_ATTRIBUTE}]:has([data-footer-alert])::after { top: auto; bottom: 0.125rem; }
 `;
 
-/** Mount one server label below each sidebar's window controls, including
- *  sidebars remounted on navigation or opened later in the mobile drawer. */
+type OriginalAttributes = { title: string | null; description: string | null };
+
+/** Remove our decoration and restore the button's original hover/accessibility text. */
+function restoreButton(button: HTMLElement, original: OriginalAttributes): void {
+  button.removeAttribute(IDENTITY_ATTRIBUTE);
+  const attributes = { title: original.title, "aria-description": original.description };
+  for (const [attribute, value] of Object.entries(attributes)) {
+    if (value === null) button.removeAttribute(attribute);
+    else button.setAttribute(attribute, value);
+  }
+}
+
+/** Decorate the existing Connect button without adding layout space or changing its action. */
 function mountIdentity(): () => void {
   const controller = new AbortController();
   const style = document.createElement("style");
@@ -43,37 +41,34 @@ function mountIdentity(): () => void {
   document.head.append(style);
 
   let name = "Server…";
-  // Each label belongs to a particular header; discard it when React removes
-  // that header. Staying below the chrome also clears macOS's control capsule.
-  const labels = new Map<Element, HTMLElement>();
-  const syncLabels = () => {
-    for (const [header, label] of labels) {
-      if (!header.isConnected) {
-        label.remove();
-        labels.delete(header);
+  // Restore host-owned attributes on disposal; footer buttons may remount or
+  // appear later when the user opens the mobile sidebar.
+  const buttons = new Map<HTMLElement, OriginalAttributes>();
+  const syncButtons = () => {
+    for (const [button, original] of buttons) {
+      if (!button.isConnected) {
+        restoreButton(button, original);
+        buttons.delete(button);
       }
     }
-    for (const header of document.querySelectorAll(HEADER)) {
-      let label = labels.get(header);
-      if (!label) {
-        label = document.createElement("div");
-        label.setAttribute("role", "note");
-        label.append(document.createElement("span"));
-        labels.set(header, label);
+    for (const button of document.querySelectorAll<HTMLElement>(CONNECT_BUTTON)) {
+      if (!buttons.has(button)) {
+        buttons.set(button, {
+          title: button.getAttribute("title"),
+          description: button.getAttribute("aria-description"),
+        });
       }
-      if (label.getAttribute(LABEL_ATTRIBUTE) !== name) {
-        label.setAttribute(LABEL_ATTRIBUTE, name);
-        label.setAttribute("aria-label", `Cloudroom server: ${name}`);
-        label.title = `Cloudroom server: ${name}`;
-        label.firstElementChild!.textContent = name;
+      if (button.getAttribute(IDENTITY_ATTRIBUTE) !== name) {
+        button.setAttribute(IDENTITY_ATTRIBUTE, name);
+        button.title = `Cloudroom server: ${name}`;
+        button.setAttribute("aria-description", `Cloudroom server: ${name}`);
       }
-      if (header.nextElementSibling !== label) header.after(label);
     }
   };
 
-  const observer = new MutationObserver(syncLabels);
+  const observer = new MutationObserver(syncButtons);
   observer.observe(document.body, { childList: true, subtree: true });
-  syncLabels();
+  syncButtons();
 
   void fetch("/api/v1/plugins/server-identity/http/identity", { signal: controller.signal })
     .then(async (response) => {
@@ -85,19 +80,19 @@ function mountIdentity(): () => void {
       }
       if (controller.signal.aborted) return;
       name = identity.name;
-      syncLabels();
+      syncButtons();
     })
     .catch((error: unknown) => {
       if (controller.signal.aborted) return;
       console.warn("Server Identity: could not read the server name", error);
       name = "Server unknown";
-      syncLabels();
+      syncButtons();
     });
 
   return () => {
     controller.abort();
     observer.disconnect();
-    for (const label of labels.values()) label.remove();
+    for (const [button, original] of buttons) restoreButton(button, original);
     style.remove();
   };
 }
