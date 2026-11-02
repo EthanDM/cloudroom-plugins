@@ -26,7 +26,7 @@
   "mobile-fixes": [
     {
       "id": "mobile-navigation",
-      "description": "At phone width, Plugins and Skills are hidden; desktop keeps them."
+      "description": "Plugins and Skills remain available on phone and desktop according to native sidebar preferences; mobile-fixes does not hide them."
     },
     {
       "id": "picker-safe-area",

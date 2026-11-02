@@ -8,7 +8,7 @@
   },
   "bb": {
     "name": "Mobile Fixes",
-    "description": "Phone-only fixes: safe-area padding in pickers and a shorter sidebar nav.",
+    "description": "Restores safe-area padding in mobile picker sheets.",
     "branding": {
       "icon": "Smartphone"
     },

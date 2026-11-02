@@ -98,7 +98,7 @@ def run_browser_smoke(output_path: str, *, zoom_reset: bool = False, fresh_load:
       }
       if (enabled('mobile-fixes')) {
         const entries = ['__bb__/extensions','__bb__/skills'].map(id => document.querySelector(`[data-sidebar-navigation-item="${id}"]`)).filter(Boolean);
-        if (entries.length) note('mobile-fixes', 'mobile-navigation', `${innerWidth}px viewport; ${entries.filter(e=>getComputedStyle(e).display==='none').length}/${entries.length} management entries hidden; compare phone and desktop states`);
+        if (entries.length) note('mobile-fixes', 'mobile-navigation', `${innerWidth}px viewport; ${entries.filter(e=>getComputedStyle(e).display==='none').length}/${entries.length} present management entries hidden; verify native preferences and phone/desktop availability`);
       }
       const navigation = performance.getEntriesByType('navigation')[0];
       const freshDocument = FRESH_LOAD && !!navigation && performance.now() - navigation.startTime < 300000;

@@ -85,7 +85,9 @@ After installing a fix, capture new browser evidence for the new bundle.
   alert/action remains. Test request failure, remount and cleanup. Each independent
   server needs its own identity check.
 - **ui-scale/mobile-fixes:** reset browser zoom to 100%; inspect desktop root size
-  and overflow. Use a real coarse-pointer phone for mobile baseline and picker
+  and overflow. Confirm Plugins and Skills remain available according to native
+  sidebar preferences at phone and desktop widths. Use a real coarse-pointer phone
+  for mobile baseline and picker
   home-indicator clearance; headless `env(safe-area-inset-bottom)=0` is insufficient.
 - **thread-ids:** use a known open thread and verify all three command values.
   Avoid exposing or reading existing clipboard contents. Command registration
