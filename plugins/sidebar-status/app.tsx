@@ -48,6 +48,9 @@ const LABEL_TIER = '[data-sidebar-sticky-tier="label"]';
 const PROJECT_SECTION = "[data-sidebar-sticky-project-item] > [data-sidebar-sticky-group]";
 const PROJECT_HEADER = `${PROJECT_SECTION} > ${LABEL_TIER}`;
 const EMPTY_PROJECT = `${PROJECT_SECTION}:has(> ${LABEL_TIER} button[aria-expanded="true"]):not(:has(a[data-sidebar-thread-id]))`;
+// The same test from the project item, the sibling level, for spacing rules.
+// :has() can't nest, so this can't be built from EMPTY_PROJECT.
+const EMPTY_PROJECT_ITEM = `[data-sidebar-sticky-project-item]:has(> [data-sidebar-sticky-group] > ${LABEL_TIER} button[aria-expanded="true"]):not(:has(a[data-sidebar-thread-id]))`;
 
 // Colors use Cloudroom's raw theme variables (--foreground, --warning-text…).
 // Its Tailwind `@theme inline` block compiles --color-* names away, so those
@@ -184,6 +187,10 @@ ${EMPTY_PROJECT} > ${LABEL_TIER} + div { display: none; }
 ${EMPTY_PROJECT} > ${LABEL_TIER} {
   color: color-mix(in oklab, var(--foreground) 50%, transparent);
 }
+/* Back-to-back empty projects stack at about thread-row spacing instead of
+   Cloudroom's 1rem section gap (space-y-4 on the project list). The negative
+   margin collapses with that 1rem bottom margin, leaving 4px. */
+${EMPTY_PROJECT_ITEM} + ${EMPTY_PROJECT_ITEM} { margin-top: calc(4px - 1rem); }
 `;
 
 type ThreadProgress = ReadonlyMap<string, number | null>;

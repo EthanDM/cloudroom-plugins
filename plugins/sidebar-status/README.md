@@ -18,7 +18,7 @@ Hierarchy fixes:
 
 - **Project headers** go from Cloudroom's 12px dim grey to 13px medium weight at 88% of the text color: brighter than idle threads, and not bold, so bold stays reserved for unread threads, with their collapse chevron always faintly visible.
 - **Idle threads** dim to about 60% so headers and threads that need you lead. Hovering or selecting a row restores full color.
-- **Empty projects** (expanded, with no thread rows) lose the "No threads" row and dim their header to 50%, below idle threads. This also hides "All threads pinned" and "Threads unavailable", which use the same slot. Collapsed projects keep their normal header.
+- **Empty projects** (expanded, with no thread rows) lose the "No threads" row and dim their header to 50%, below idle threads. Consecutive empty projects stack tightly instead of keeping the full gap between projects. This also hides "All threads pinned" and "Threads unavailable", which use the same slot. Collapsed projects keep their normal header.
 
 Motion: expanding or collapsing a project slides its thread list open or closed (about 150–260ms, longer lists take slightly longer). Cloudroom mounts and unmounts the list instead of hiding it, so collapse briefly re-inserts the removed list as an inert, non-clickable copy and shrinks it away (`collapse-motion.ts`). Off when the system asks for reduced motion. Child-thread groups under a parent thread don't animate.
 
