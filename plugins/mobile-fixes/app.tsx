@@ -20,6 +20,10 @@ import { mountRightPanelSwipe } from "./right-panel-swipe";
 // Floating Side chat button: on phones it floats over the timeline and its
 // panel action never opens the compact drawer (v139), so each tap creates a
 // hidden side chat. The per-message Side chat action still works there.
+//
+// Thread composer while typing: the app already drops the shell's safe-area
+// padding when the keyboard opens, but the composer row keeps 0.5rem below the
+// box, on top of the space iOS leaves above its keyboard toolbar.
 const COMPACT_HOME = '[data-testid="root-compose-compact-home"]';
 const COMPACT_HOME_SCROLLER = '[data-testid="root-compose-compact-scroll-viewport"]';
 const COMPACT_HOME_FOOTER = `div:has(> ${COMPACT_HOME}) + div`;
@@ -41,6 +45,7 @@ ${COMPACT_HOME_FOOTER}:empty { display: none; }
 ${COMPACT_HOME_FOOTER} { padding-bottom: 0.5rem !important; }
 @media (max-width: 767px) {
   [data-thread-header-pane-actions] button[aria-label="Side chat"] { display: none !important; }
+  .chat-prompt-box:has([contenteditable="true"]:focus) { padding-bottom: 0 !important; }
 }
 `;
 

@@ -45,6 +45,10 @@
       "description": "Phone thread: no floating Side chat button under the header; message Side chat action still opens the right panel; desktop still shows the header button."
     },
     {
+      "id": "composer-keyboard-gap",
+      "description": "iPhone thread: focus the input; its box sits on the keyboard toolbar with no extra 8px band; after dismissing the keyboard the normal spacing returns."
+    },
+    {
       "id": "compact-home-layout",
       "description": "Phone new-thread screen: Recent list scrolls from just under the header to the input; a short list rests on the input; no empty band under the No project/Cloud row; Connect Claude footer still shows when disconnected."
     }
