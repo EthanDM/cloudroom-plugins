@@ -15,19 +15,40 @@ declare global {
 
 type Row = { label: string; run: () => void };
 
-/** The same URL the HTML preview's "Open in external browser" button opens.
- * The thread comes from the route, so a split view uses the focused thread. */
-function htmlPreviewUrl(path: string): string | null {
-  const threadId = location.pathname.match(/\/threads\/(thr_[\w-]+)/)?.[1];
-  if (!threadId) return null;
-  return new URL(`/api/v1/threads/${threadId}/files/raw?path=${encodeURIComponent(path)}`, location.href).toString();
+// The longest lease the server allows; the tab keeps working for an hour.
+const PREVIEW_LEASE_TTL_MS = 60 * 60 * 1000;
+
+/** A file-preview lease URL for the file. Leases are readable without the
+ * app's session (the thread `files/raw` URL is not), so they load in an
+ * external browser, and rooting one at the file's folder lets the page's
+ * relative CSS, scripts and images load too. */
+async function createPreviewUrl(path: string): Promise<string> {
+  const slash = path.lastIndexOf("/");
+  const response = await fetch("/api/v1/files/previews", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ rootPath: path.slice(0, slash) || "/", ttlMs: PREVIEW_LEASE_TTL_MS }),
+  });
+  if (!response.ok) throw new Error(`Preview lease failed: HTTP ${response.status}`);
+  const { baseUrl } = (await response.json()) as { baseUrl: string };
+  return new URL(`${baseUrl}/${encodeURIComponent(path.slice(slash + 1))}`, location.href).toString();
 }
 
 /** Mirrors the app's openUrlInExternalBrowser: the desktop app hands the URL
- * to the OS; a browser opens a tab where the user is viewing from. */
-function openExternally(url: string): void {
-  if (window.bbDesktop?.openExternalUrl) window.bbDesktop.openExternalUrl(url);
-  else window.open(url, "_blank", "noopener,noreferrer");
+ * to the OS browser; a browser opens a tab where the user is viewing from.
+ * That tab opens before the lease request so Safari doesn't treat it as an
+ * unprompted popup. */
+function openInBrowser(path: string): void {
+  const openExternalUrl = window.bbDesktop?.openExternalUrl;
+  const tab = openExternalUrl ? null : window.open("", "_blank");
+  if (tab) tab.opener = null;
+  createPreviewUrl(path).then(
+    (url) => (openExternalUrl ? openExternalUrl(url) : tab?.location.replace(url)),
+    (error: unknown) => {
+      tab?.close();
+      console.error("[file-link-menu]", error);
+    },
+  );
 }
 
 function rowsFor(path: string): Row[] {
@@ -39,8 +60,7 @@ function rowsFor(path: string): Row[] {
       body: JSON.stringify({ path }),
     }),
   }];
-  const browserUrl = HTML_FILE.test(path) ? htmlPreviewUrl(path) : null;
-  if (browserUrl) rows.push({ label: "Open in Browser", run: () => openExternally(browserUrl) });
+  if (HTML_FILE.test(path)) rows.push({ label: "Open in Browser", run: () => openInBrowser(path) });
   return rows;
 }
 
