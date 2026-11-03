@@ -26,7 +26,7 @@ Motion: expanding or collapsing a project slides its thread list open or closed 
 
 Tree guide lines and the sidebar's right edge are repainted a neutral grey (Cloudroom's hairline and seam colors pick up the theme's tint).
 
-Idle Cloud threads keep their cloud icon. Other states (drafts, queued messages, plan mode, background work) keep Cloudroom's own indicator on the right. The 14px slot is kept, so indentation doesn't change.
+Idle Cloud threads keep their cloud icon, muted to the rings' grey so color stays reserved for status. Other states (drafts, queued messages, plan mode, background work) keep Cloudroom's own indicator on the right. The 14px slot is kept, so indentation doesn't change.
 
 Assumes Settings → Appearance → Harness icons is Off (the default). Matches Cloudroom v139 markup: the status `aria-label`s ("Thread working", "Thread needs user input", "Unread thread failed", "Unread thread succeeded"), `[aria-label="Local thread"]`, `.bb-thread-title`, `.bb-sidebar-selected-row`, and the project header's `[data-sidebar-sticky-project-item] > [data-sidebar-sticky-group] > [data-sidebar-sticky-tier="label"]`. If one changes, that state falls back to Cloudroom's own look.
 

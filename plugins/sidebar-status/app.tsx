@@ -140,6 +140,11 @@ ${ROW}:has(> a ~ span:last-child [aria-label^="Unread thread"]) .bb-thread-title
 ${ROW}:not(.bb-sidebar-selected-row):not(:hover):not(${ATTENTION_STATES}) .bb-thread-title {
   color: color-mix(in oklab, var(--sidebar-foreground) 62%, transparent);
 }
+/* An idle Cloud thread keeps its cloud icon, in the rings' grey: the shape
+   still tells Cloud from Local, while color stays reserved for status. */
+${ROW}:not(${ATTENTION_STATES}) > a + span > [aria-label="Cloud thread"] {
+  color: ${RING_ARC};
+}
 
 ${idleLocalRow()} > a + span::before {
   width: 0.625rem; height: 0.625rem; margin: 0.125rem;
