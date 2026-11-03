@@ -4,7 +4,7 @@ Personal Cloudroom tweaks. Each plugin lives in `plugins/<name>/` and is listed 
 
 | Plugin | What it does |
 | --- | --- |
-| `hide-plan-card` | Hides Cloud promos: the Free plan card, rotating Pro tip, Cloud nudges, and beta offer. |
+| `hide-plan-card` | Hides Cloud promos: the Free plan card, rotating Pro tip, Cloud nudges, beta offer, and Get started checklist. |
 | `hide-header-actions` | Hides the thread header's Report a bug and Share buttons; an already-shared thread keeps "Shared". |
 | `file-link-menu` | Top-level **Reveal in Finder** (on the server's Mac) and, for HTML files, **Open in Browser** (where you're viewing from) in the right-click menu on chat file links. |
 | `server-identity` | Adds a tiny server dot to the footer's phone icon (blue for edm-node, lime for edm-mbp) and a blue send button on edm-node. |

@@ -11,6 +11,10 @@
     {
       "id": "promo-fixtures",
       "description": "All five promo placements and copy variants hide against matching shipped markup, including late insertion."
+    },
+    {
+      "id": "get-started-checklist",
+      "description": "Desktop thread or new-thread screen: the floating Get started checklist never appears, including after its 8-hour hide expires; the One-click prompts section is unaffected."
     }
   ],
   "hide-header-actions": [

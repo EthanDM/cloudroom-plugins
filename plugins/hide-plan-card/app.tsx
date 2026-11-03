@@ -5,7 +5,8 @@ import { definePluginApp } from "@get-bb/plugin-sdk/app";
 const HIDE_CLOUD_PROMOS_CSS = `
 section[aria-label="Free plan"],
 section[aria-label="A note from David"],
-section[aria-label="Move to Cloud"] {
+section[aria-label="Move to Cloud"],
+section[aria-label="Get started"] {
   display: none !important;
 }
 
