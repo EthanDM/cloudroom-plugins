@@ -17,7 +17,7 @@ const CSS = `
   background: color-mix(in srgb, var(--foreground) 35%, transparent);
   box-shadow: 0 0 0 1px var(--sidebar, var(--background));
 }
-[${IDENTITY_ATTRIBUTE}="edm-node"]::after { background: #40afff; }
+[${IDENTITY_ATTRIBUTE}="edm-node"]::after { background: #0090ff; }
 [${IDENTITY_ATTRIBUTE}="edm-mbp"]::after { background: #c5f000; }
 /* Connect owns the upper-right corner when it has an error to report. */
 [${IDENTITY_ATTRIBUTE}]:has([data-footer-alert])::after { top: auto; bottom: 0.125rem; }
