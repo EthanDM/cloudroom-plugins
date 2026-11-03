@@ -1,4 +1,5 @@
 import { definePluginApp } from "@get-bb/plugin-sdk/app";
+import { mountRightPanelSwipe } from "./right-panel-swipe";
 
 // Phone-width fixes against Cloudroom v139 markup.
 //
@@ -43,7 +44,11 @@ export default definePluginApp((app) => {
       const style = document.createElement("style");
       style.textContent = MOBILE_FIXES_CSS;
       document.head.append(style);
-      return () => style.remove();
+      const unmountSwipe = mountRightPanelSwipe();
+      return () => {
+        unmountSwipe();
+        style.remove();
+      };
     },
   });
 });

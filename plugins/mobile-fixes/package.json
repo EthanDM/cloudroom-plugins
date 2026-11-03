@@ -8,7 +8,7 @@
   },
   "bb": {
     "name": "Mobile Fixes",
-    "description": "Phone layout fixes: picker safe area, taller new-thread recents, less space under the input.",
+    "description": "Phone fixes: picker safe area, taller new-thread recents, less space under the input, swipe left to open the right panel.",
     "branding": {
       "icon": "Smartphone"
     },
