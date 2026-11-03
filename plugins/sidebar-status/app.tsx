@@ -90,12 +90,14 @@ const GLYPH_CSS: Record<(typeof STATES)[number]["glyph"], string> = {
     border-radius: 50%;
     color: var(--warning-text);
     font: 700 0.5625rem/1 system-ui, sans-serif;`,
+  // Two drawn diagonal strokes, not a "×" character: that glyph sits on the
+  // font's math axis, below the circle's center in some engine/font pairs.
   failed: `
-    content: "\\00d7";
     border: 1.25px solid var(--destructive-text);
     border-radius: 50%;
-    color: var(--destructive-text);
-    font: 700 0.6875rem/1 system-ui, sans-serif;`,
+    background:
+      linear-gradient(45deg, transparent calc(50% - 0.75px), var(--destructive-text) 0 calc(50% + 0.75px), transparent 0) center / 0.375rem 0.375rem no-repeat,
+      linear-gradient(-45deg, transparent calc(50% - 0.75px), var(--destructive-text) 0 calc(50% + 0.75px), transparent 0) center / 0.375rem 0.375rem no-repeat;`,
   unread: `
     width: 0.375rem; height: 0.375rem; margin: 0.25rem;
     border-radius: 50%;
