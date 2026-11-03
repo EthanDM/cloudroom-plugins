@@ -1,6 +1,15 @@
 # Cloudroom plugins
 
-Personal Cloudroom tweaks. Each plugin lives in `plugins/<name>/` and is listed in `.bb/plugins.json`.
+My personal Cloudroom tweaks, shared as-is. Tested against Cloudroom v139.
+Most of them hook into the app's page markup, so an app update can break
+them; I fix them for my own setup, with no support promised. Read a plugin's
+code before installing it: plugins run with full access to your Cloudroom
+server. MIT licensed, so fork and adapt freely.
+
+`server-identity` is specific to my two machines (`edm-node`, `edm-mbp`);
+change the hostnames and colors in its `app.tsx` to use it.
+
+Each plugin lives in `plugins/<name>/` and is listed in `.bb/plugins.json`.
 
 | Plugin | What it does |
 | --- | --- |
