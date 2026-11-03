@@ -15,12 +15,6 @@ import { definePluginApp } from "@get-bb/plugin-sdk/app";
 // Home footer: it only holds the Claude connect button, which renders null once
 // connected, yet the row keeps its own safe-area padding on top of the app
 // shell's. Drop it when empty; otherwise pad only for spacing.
-//
-// Status-bar strip (experimental): iOS 26 blurs content near the top edge
-// unless a fixed element sits on that edge. Cloudroom's header is in normal
-// flow, so its title and icons get the soft blur. A solid, hit-testable fixed
-// strip the height of the status bar gives Safari a hard edge instead. It is
-// zero-height wherever there is no top safe area.
 const COMPACT_HOME = '[data-testid="root-compose-compact-home"]';
 const COMPACT_HOME_SCROLLER = '[data-testid="root-compose-compact-scroll-viewport"]';
 const COMPACT_HOME_FOOTER = `div:has(> ${COMPACT_HOME}) + div`;
@@ -40,13 +34,6 @@ ${COMPACT_HOME_SCROLLER} > [data-testid="root-compose-compact-recents-offset"] {
 }
 ${COMPACT_HOME_FOOTER}:empty { display: none; }
 ${COMPACT_HOME_FOOTER} { padding-bottom: 0.5rem !important; }
-[data-mobile-fixes-top-edge] {
-  position: fixed;
-  inset: 0 0 auto 0;
-  height: env(safe-area-inset-top);
-  background: var(--background);
-  z-index: 2147483647;
-}
 `;
 
 export default definePluginApp((app) => {
@@ -56,14 +43,7 @@ export default definePluginApp((app) => {
       const style = document.createElement("style");
       style.textContent = MOBILE_FIXES_CSS;
       document.head.append(style);
-      const topEdge = document.createElement("div");
-      topEdge.setAttribute("data-mobile-fixes-top-edge", "");
-      topEdge.setAttribute("aria-hidden", "true");
-      document.body.append(topEdge);
-      return () => {
-        topEdge.remove();
-        style.remove();
-      };
+      return () => style.remove();
     },
   });
 });

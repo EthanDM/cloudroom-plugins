@@ -37,10 +37,6 @@
       "description": "Open Environment picker on a real phone and verify home-indicator clearance without doubled padding."
     },
     {
-      "id": "header-sharpness",
-      "description": "iPhone PWA thread view: header title and icons render as sharp as timeline text; status bar area stays the page background; header buttons still tap."
-    },
-    {
       "id": "compact-home-layout",
       "description": "Phone new-thread screen: Recent list scrolls from just under the header to the input; a short list rests on the input; no empty band under the No project/Cloud row; Connect Claude footer still shows when disconnected."
     }
