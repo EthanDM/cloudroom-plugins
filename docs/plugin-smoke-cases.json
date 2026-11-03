@@ -23,6 +23,20 @@
       "description": "A thread with an active share link still shows the Shared button and its popover can stop sharing."
     }
   ],
+  "reveal-in-finder": [
+    {
+      "id": "menu-row",
+      "description": "Right-click an absolute file link in a chat: Reveal in Finder is the first row, above Open in, with a separator; native rows still work."
+    },
+    {
+      "id": "reveal",
+      "description": "Clicking it closes the menu and opens Finder on edm-node with the file selected; a relative or missing file gets no row or a 404, not an error dialog."
+    },
+    {
+      "id": "other-menus",
+      "description": "Thread, sidebar and other context menus get no extra row; disabling the plugin removes it."
+    }
+  ],
   "thread-ids": [
     {
       "id": "sidebar-copy-id",
