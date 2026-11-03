@@ -6,7 +6,7 @@ Phone-width fixes (iPhone PWA):
 - **Taller recents on the new-thread screen.** The Recent list's scroll area was capped at about 5.5 rows above the input, leaving the top half empty. It now reaches up to the header; a short list still sits right above the input.
 - **Less space under the input.** The footer under the input only holds the Connect Claude button. Once Claude is connected the row was empty but kept ~42px of padding, on top of the app's own home-indicator space. It's hidden when empty, and otherwise no longer double-pads.
 
-Not covered: the blurred thread header. Current source has no blur on it, so it needs a device to diagnose.
+- **Sharper thread header (experimental).** On phones the page always carries `will-change: translate`, which iOS Safari renders soft; the header sits in that layer. The hint is removed while the sidebar and right panel are closed. Unconfirmed on a device until checked.
 
 Matches Cloudroom v139 markup (`[data-persistent-drawer-content]`, `root-compose-compact-*` test IDs).
 
