@@ -15,9 +15,14 @@ import { definePluginApp } from "@get-bb/plugin-sdk/app";
 // Home footer: it only holds the Claude connect button, which renders null once
 // connected, yet the row keeps its own safe-area padding on top of the app
 // shell's. Drop it when empty; otherwise pad only for spacing.
+//
+// Top padding (test): in the installed iPhone app Safari softens content just
+// below the status bar, which blurs the header. Lowering the content shell
+// checks whether that band is the cause; tune TOP_EXTRA_PX by what the device shows.
 const COMPACT_HOME = '[data-testid="root-compose-compact-home"]';
 const COMPACT_HOME_SCROLLER = '[data-testid="root-compose-compact-scroll-viewport"]';
 const COMPACT_HOME_FOOTER = `div:has(> ${COMPACT_HOME}) + div`;
+const TOP_EXTRA_PX = 24;
 const MOBILE_FIXES_CSS = `
 [data-persistent-drawer-content] > .p-0:last-child {
   padding-bottom: env(safe-area-inset-bottom) !important;
@@ -34,6 +39,11 @@ ${COMPACT_HOME_SCROLLER} > [data-testid="root-compose-compact-recents-offset"] {
 }
 ${COMPACT_HOME_FOOTER}:empty { display: none; }
 ${COMPACT_HOME_FOOTER} { padding-bottom: 0.5rem !important; }
+@media (display-mode: standalone) and (pointer: coarse) {
+  [data-testid="app-layout-content-shell"] {
+    padding-top: calc(env(safe-area-inset-top) + ${TOP_EXTRA_PX}px) !important;
+  }
+}
 `;
 
 export default definePluginApp((app) => {
