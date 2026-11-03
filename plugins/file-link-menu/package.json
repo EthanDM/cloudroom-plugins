@@ -1,5 +1,5 @@
 {
-  "name": "bb-plugin-reveal-in-finder",
+  "name": "bb-plugin-file-link-menu",
   "version": "0.1.0",
   "type": "module",
   "engines": {
@@ -7,8 +7,8 @@
     "bbPluginSdk": ">=0.6.50"
   },
   "bb": {
-    "name": "Reveal in Finder",
-    "description": "Adds a top-level Reveal in Finder row to the right-click menu on file links in chats.",
+    "name": "File Link Menu",
+    "description": "Adds top-level Reveal in Finder and, for HTML files, Open in Browser to the right-click menu on file links in chats.",
     "branding": {
       "icon": "FolderOpen"
     },

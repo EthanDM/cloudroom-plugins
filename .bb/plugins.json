@@ -5,7 +5,7 @@
   "plugins": [
     { "name": "hide-plan-card", "source": "./plugins/hide-plan-card" },
     { "name": "hide-header-actions", "source": "./plugins/hide-header-actions" },
-    { "name": "reveal-in-finder", "source": "./plugins/reveal-in-finder" },
+    { "name": "file-link-menu", "source": "./plugins/file-link-menu" },
     { "name": "thread-ids", "source": "./plugins/thread-ids" },
     { "name": "thread-menu-keys", "source": "./plugins/thread-menu-keys" },
     { "name": "mobile-fixes", "source": "./plugins/mobile-fixes" },

@@ -23,18 +23,22 @@
       "description": "A thread with an active share link still shows the Shared button and its popover can stop sharing."
     }
   ],
-  "reveal-in-finder": [
+  "file-link-menu": [
     {
-      "id": "menu-row",
-      "description": "Right-click an absolute file link in a chat: Reveal in Finder is the first row, above Open in, with a separator; native rows still work."
+      "id": "menu-rows",
+      "description": "Right-click an absolute file link in a chat: Reveal in Finder is the first row; for .html/.htm files Open in Browser follows; then a separator and the native rows, which still work."
     },
     {
       "id": "reveal",
-      "description": "Clicking it closes the menu and opens Finder on edm-node with the file selected; a relative or missing file gets no row or a 404, not an error dialog."
+      "description": "Reveal in Finder closes the menu and opens Finder on edm-node with the file selected; a missing file returns 404 without an error dialog."
+    },
+    {
+      "id": "open-in-browser",
+      "description": "Open in Browser opens the same page as the HTML preview's globe button: a new tab in Safari when viewing remotely, the default browser in the desktop app."
     },
     {
       "id": "other-menus",
-      "description": "Thread, sidebar and other context menus get no extra row; disabling the plugin removes it."
+      "description": "Thread, sidebar and other context menus get no extra rows; disabling the plugin removes them."
     }
   ],
   "thread-ids": [
