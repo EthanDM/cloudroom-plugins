@@ -1,0 +1,27 @@
+{
+  "name": "bb-plugin-css-scope",
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "bb": ">=139.0.0 <141.0.0",
+    "bbPluginSdk": ">=0.6.50 <0.7.0"
+  },
+  "bb": {
+    "name": "Plugin CSS Scope",
+    "description": "Reduces chat-switch stalls by scoping generated CSS for three built-in plugins.",
+    "branding": {
+      "icon": "Zap"
+    },
+    "server": "./server.ts",
+    "app": "./app.tsx",
+    "skills": []
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@get-bb/plugin-sdk": "0.6.49",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.7.0"
+  }
+}

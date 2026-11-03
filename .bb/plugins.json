@@ -13,6 +13,7 @@
     { "name": "sidebar-status", "source": "./plugins/sidebar-status" },
     { "name": "ui-scale", "source": "./plugins/ui-scale" },
     { "name": "server-identity", "source": "./plugins/server-identity" },
-    { "name": "compact-navigation", "source": "./plugins/compact-navigation" }
+    { "name": "compact-navigation", "source": "./plugins/compact-navigation" },
+    { "name": "css-scope", "source": "./plugins/css-scope" }
   ]
 }

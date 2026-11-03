@@ -23,6 +23,7 @@ Each plugin lives in `plugins/<name>/` and is listed in `.bb/plugins.json`.
 | `mobile-fixes` | Safe-area padding in mobile picker sheets; taller new-thread recents, less space under the input, and swipe left for the right panel on phones. |
 | `sidebar-status` | Thread status and % done rings in the left icon slot, bold unread titles, stronger project headers, dimmed idle threads, no "No threads" rows, animated expand/collapse. |
 | `keep-spinners` | Desktop app: keeps running-agent animations moving when the window loses focus. |
+| `css-scope` | Temporary v139–140 workaround: scopes three built-in plugins' utility CSS to reduce chat-switch style work. |
 
 ## Install or update on a Cloudroom server
 
