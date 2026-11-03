@@ -1,6 +1,6 @@
 import { definePluginApp } from "@get-bb/plugin-sdk/app";
 
-const REVEAL_URL = "/api/v1/plugins/file-link-menu/http/reveal";
+const PLUGIN_HTTP = "/api/v1/plugins/file-link-menu/http";
 const ROW_ATTRIBUTE = "data-file-link-menu";
 const ANCHOR_ITEM_LABEL = "Copy file path";
 // The context menu opens right after the right-click; older captures are stale.
@@ -9,7 +9,7 @@ const HTML_FILE = /\.html?$/i;
 
 declare global {
   interface Window {
-    bbDesktop?: { openExternalUrl?: (url: string) => void } | null;
+    bbDesktop?: object | null;
   }
 }
 
@@ -34,16 +34,30 @@ async function createPreviewUrl(path: string): Promise<string> {
   return new URL(`${baseUrl}/${encodeURIComponent(path.slice(slash + 1))}`, location.href).toString();
 }
 
-/** Mirrors the app's openUrlInExternalBrowser: the desktop app hands the URL
- * to the OS browser; a browser opens a tab where the user is viewing from.
- * That tab opens before the lease request so Safari doesn't treat it as an
- * unprompted popup. */
+function postToServer(route: string, path: string): Promise<Response> {
+  return fetch(`${PLUGIN_HTTP}/${route}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ path }),
+  });
+}
+
+/** The desktop app runs on the server's Mac, so the server opens the real
+ * file (`file:///…`) in the default browser; the app itself only hands http
+ * links to the OS. A remote browser can't reach that file, so it gets a new
+ * tab on a preview lease, opened before the request so Safari doesn't treat
+ * it as an unprompted popup. */
 function openInBrowser(path: string): void {
-  const openExternalUrl = window.bbDesktop?.openExternalUrl;
-  const tab = openExternalUrl ? null : window.open("", "_blank");
+  if (window.bbDesktop) {
+    void postToServer("open-in-browser", path).then((response) => {
+      if (!response.ok) console.error("[file-link-menu] open-in-browser failed:", response.status);
+    });
+    return;
+  }
+  const tab = window.open("", "_blank");
   if (tab) tab.opener = null;
   createPreviewUrl(path).then(
-    (url) => (openExternalUrl ? openExternalUrl(url) : tab?.location.replace(url)),
+    (url) => tab?.location.replace(url),
     (error: unknown) => {
       tab?.close();
       console.error("[file-link-menu]", error);
@@ -54,11 +68,7 @@ function openInBrowser(path: string): void {
 function rowsFor(path: string): Row[] {
   const rows: Row[] = [{
     label: "Reveal in Finder",
-    run: () => void fetch(REVEAL_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path }),
-    }),
+    run: () => void postToServer("reveal", path),
   }];
   if (HTML_FILE.test(path)) rows.push({ label: "Open in Browser", run: () => openInBrowser(path) });
   return rows;

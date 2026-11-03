@@ -34,7 +34,7 @@
     },
     {
       "id": "open-in-browser",
-      "description": "Open in Browser opens the HTML page with its relative CSS/images via a file-preview lease: the default browser from the desktop app, a new Safari tab when viewing remotely; no login or 401 page."
+      "description": "Desktop app on edm-node: Open in Browser opens file:///\u2026/x.html in the default browser. Safari on another device: a new tab on a preview lease that loads the page and its relative CSS/images, no login page."
     },
     {
       "id": "other-menus",
