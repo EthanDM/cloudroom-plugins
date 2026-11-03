@@ -15,12 +15,6 @@ import { definePluginApp } from "@get-bb/plugin-sdk/app";
 // Home footer: it only holds the Claude connect button, which renders null once
 // connected, yet the row keeps its own safe-area padding on top of the app
 // shell's. Drop it when empty; otherwise pad only for spacing.
-//
-// Blurry thread header: on phones the page inset always carries
-// `will-change: translate` (its shelf attributes are set even when closed), and
-// iOS Safari draws text in such a layer soft. The timeline scrolls in its own
-// layer and stays sharp; the header doesn't. Drop the hint while both shelves
-// are closed; opening one restores it before the slide.
 const COMPACT_HOME = '[data-testid="root-compose-compact-home"]';
 const COMPACT_HOME_SCROLLER = '[data-testid="root-compose-compact-scroll-viewport"]';
 const COMPACT_HOME_FOOTER = `div:has(> ${COMPACT_HOME}) + div`;
@@ -40,9 +34,6 @@ ${COMPACT_HOME_SCROLLER} > [data-testid="root-compose-compact-recents-offset"] {
 }
 ${COMPACT_HOME_FOOTER}:empty { display: none; }
 ${COMPACT_HOME_FOOTER} { padding-bottom: 0.5rem !important; }
-[data-sidebar="inset"][data-sidebar-shelf="closed"]:is(:not([data-panel-shelf]), [data-panel-shelf="closed"]) {
-  will-change: auto !important;
-}
 `;
 
 export default definePluginApp((app) => {
