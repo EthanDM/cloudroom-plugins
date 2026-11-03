@@ -13,6 +13,16 @@
       "description": "All five promo placements and copy variants hide against matching shipped markup, including late insertion."
     }
   ],
+  "hide-header-actions": [
+    {
+      "id": "header-buttons",
+      "description": "Thread header on desktop and phone: no Report a bug button and no Share button; other header actions and plugin actions keep their spacing."
+    },
+    {
+      "id": "shared-thread",
+      "description": "A thread with an active share link still shows the Shared button and its popover can stop sharing."
+    }
+  ],
   "thread-ids": [
     {
       "id": "sidebar-copy-id",

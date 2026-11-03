@@ -5,6 +5,7 @@ Personal Cloudroom tweaks. Each plugin lives in `plugins/<name>/` and is listed 
 | Plugin | What it does |
 | --- | --- |
 | `hide-plan-card` | Hides Cloud promos: the Free plan card, rotating Pro tip, Cloud nudges, and beta offer. |
+| `hide-header-actions` | Hides the thread header's Report a bug and Share buttons; an already-shared thread keeps "Shared". |
 | `server-identity` | Adds a tiny server dot to the footer's phone icon (blue for edm-node, lime for edm-mbp) and a blue send button on edm-node. |
 | `compact-navigation` | Packs native sidebar navigation into an icon bar with tooltips, preserving More and customization. |
 | `thread-ids` | Copy thread ID in sidebar menus; palette commands for ID, `@thread:` mention, or link. |

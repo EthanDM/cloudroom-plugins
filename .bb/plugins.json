@@ -4,6 +4,7 @@
   "name": "ethan-cloudroom-plugins",
   "plugins": [
     { "name": "hide-plan-card", "source": "./plugins/hide-plan-card" },
+    { "name": "hide-header-actions", "source": "./plugins/hide-header-actions" },
     { "name": "thread-ids", "source": "./plugins/thread-ids" },
     { "name": "thread-menu-keys", "source": "./plugins/thread-menu-keys" },
     { "name": "mobile-fixes", "source": "./plugins/mobile-fixes" },
