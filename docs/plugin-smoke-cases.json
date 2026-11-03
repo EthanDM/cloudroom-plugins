@@ -41,6 +41,10 @@
       "description": "iPhone thread: swipe left from the right edge drags the page and reveals the right panel; past a third or a flick opens it, short slow swipes snap back; vertical scroll and taps on header buttons unaffected; swipe right still closes."
     },
     {
+      "id": "side-chat-button",
+      "description": "Phone thread: no floating Side chat button under the header; message Side chat action still opens the right panel; desktop still shows the header button."
+    },
+    {
       "id": "compact-home-layout",
       "description": "Phone new-thread screen: Recent list scrolls from just under the header to the input; a short list rests on the input; no empty band under the No project/Cloud row; Connect Claude footer still shows when disconnected."
     }

@@ -8,6 +8,8 @@ Phone-width fixes (iPhone PWA):
 
 - **Swipe left to open the right panel.** In a thread, swipe left from the right edge (outer 72px) and the page follows your finger, like the left sidebar's swipe. Release past a third, or flick, to open; otherwise it snaps back. Starts on buttons or text fields are ignored. Uses the shelf's `secondary-panel-shelf` test ID, `data-sidebar="inset"`, and the "Show right panel" button label.
 
+- **No floating Side chat button on phones.** It floated over the chat, and on phones it created a hidden side chat without opening the panel. Use a message's own Side chat action instead. Desktop keeps the button.
+
 Not covered: the soft thread header on iPhone. Safari blurs a band just below the status bar in the installed app; 24px of extra top padding made the header sharp (confirmed on device) but cost space and left the fixed sidebar buttons in the band, so it was reverted. Removing the page's idle `will-change` and a fixed strip behind the status bar did not help.
 
 Matches Cloudroom v139 markup (`[data-persistent-drawer-content]`, `root-compose-compact-*` test IDs).

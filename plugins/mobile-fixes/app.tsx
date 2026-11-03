@@ -16,6 +16,10 @@ import { mountRightPanelSwipe } from "./right-panel-swipe";
 // Home footer: it only holds the Claude connect button, which renders null once
 // connected, yet the row keeps its own safe-area padding on top of the app
 // shell's. Drop it when empty; otherwise pad only for spacing.
+//
+// Floating Side chat button: on phones it floats over the timeline and its
+// panel action never opens the compact drawer (v139), so each tap creates a
+// hidden side chat. The per-message Side chat action still works there.
 const COMPACT_HOME = '[data-testid="root-compose-compact-home"]';
 const COMPACT_HOME_SCROLLER = '[data-testid="root-compose-compact-scroll-viewport"]';
 const COMPACT_HOME_FOOTER = `div:has(> ${COMPACT_HOME}) + div`;
@@ -35,6 +39,9 @@ ${COMPACT_HOME_SCROLLER} > [data-testid="root-compose-compact-recents-offset"] {
 }
 ${COMPACT_HOME_FOOTER}:empty { display: none; }
 ${COMPACT_HOME_FOOTER} { padding-bottom: 0.5rem !important; }
+@media (max-width: 767px) {
+  [data-thread-header-pane-actions] button[aria-label="Side chat"] { display: none !important; }
+}
 `;
 
 export default definePluginApp((app) => {
