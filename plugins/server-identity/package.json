@@ -8,7 +8,7 @@
   },
   "bb": {
     "name": "Server Identity",
-    "description": "Marks the Connect footer icon with this Cloudroom server\u2019s identity.",
+    "description": "Marks the Connect footer icon with this Cloudroom server\u2019s identity and tints the send button on edm-node.",
     "branding": {
       "icon": "Monitor"
     },

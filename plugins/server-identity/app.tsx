@@ -2,6 +2,8 @@ import { definePluginApp } from "@get-bb/plugin-sdk/app";
 
 const CONNECT_BUTTON = '[data-testid="plugin-sidebar-footer-item-connect-remote-access"]';
 const IDENTITY_ATTRIBUTE = "data-server-identity";
+// Separate from IDENTITY_ATTRIBUTE so the dot rule never matches <html>.
+const ROOT_IDENTITY_ATTRIBUTE = "data-server-identity-root";
 const CSS = `
 [${IDENTITY_ATTRIBUTE}]::after {
   content: "";
@@ -19,6 +21,14 @@ const CSS = `
 [${IDENTITY_ATTRIBUTE}="edm-mbp"]::after { background: #c5f000; }
 /* Connect owns the upper-right corner when it has an error to report. */
 [${IDENTITY_ATTRIBUTE}]:has([data-footer-alert])::after { top: auto; bottom: 0.125rem; }
+/* Disabled keeps the app's grey so an empty prompt still reads as unsendable. */
+[${ROOT_IDENTITY_ATTRIBUTE}="edm-node"] [data-promptbox-submit-action]:not(:disabled) {
+  background: #0090ff;
+  color: #fff;
+}
+[${ROOT_IDENTITY_ATTRIBUTE}="edm-node"] [data-promptbox-submit-action]:not(:disabled):hover {
+  background: #0588f0;
+}
 `;
 
 type OriginalAttributes = { title: string | null; description: string | null };
@@ -80,6 +90,7 @@ function mountIdentity(): () => void {
       }
       if (controller.signal.aborted) return;
       name = identity.name;
+      document.documentElement.setAttribute(ROOT_IDENTITY_ATTRIBUTE, name);
       syncButtons();
     })
     .catch((error: unknown) => {
@@ -93,6 +104,7 @@ function mountIdentity(): () => void {
     controller.abort();
     observer.disconnect();
     for (const [button, original] of buttons) restoreButton(button, original);
+    document.documentElement.removeAttribute(ROOT_IDENTITY_ATTRIBUTE);
     style.remove();
   };
 }

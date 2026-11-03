@@ -12,6 +12,10 @@ the connected server and does not change when selecting another thread or machin
 - `edm-mbp`: lime dot.
 - Other hostnames: neutral dot.
 
+On `edm-node`, the prompt's send button is also blue so the two servers are
+hard to confuse while typing. The disabled (empty prompt) state keeps the app's
+grey. This uses the button's `data-promptbox-submit-action` hook.
+
 The dot identifies the machine; it is not a live connection/status indicator.
 The button’s native hover title and accessibility description say
 “Cloudroom server: <name>”. Connect’s existing tooltip and alerts remain intact.

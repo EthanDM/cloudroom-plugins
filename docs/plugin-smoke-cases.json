@@ -87,6 +87,10 @@
     {
       "id": "other-server",
       "description": "On the other independent server, identity comes from that backend, not the viewing device."
+    },
+    {
+      "id": "send-button",
+      "description": "On edm-node the enabled send button is blue with a white arrow; disabled stays grey; edm-mbp keeps the default."
     }
   ],
   "compact-navigation": [
