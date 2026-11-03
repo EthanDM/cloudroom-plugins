@@ -8,7 +8,7 @@
   },
   "bb": {
     "name": "Mobile Fixes",
-    "description": "Restores safe-area padding in mobile picker sheets.",
+    "description": "Phone layout fixes: picker safe area, taller new-thread recents, less space under the input.",
     "branding": {
       "icon": "Smartphone"
     },

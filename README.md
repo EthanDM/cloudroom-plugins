@@ -9,7 +9,7 @@ Personal Cloudroom tweaks. Each plugin lives in `plugins/<name>/` and is listed 
 | `compact-navigation` | Packs native sidebar navigation into an icon bar with tooltips, preserving More and customization. |
 | `thread-ids` | Copy thread ID in sidebar menus; palette commands for ID, `@thread:` mention, or link. |
 | `thread-menu-keys` | Visible single-key shortcuts while a thread menu is open. |
-| `mobile-fixes` | Safe-area padding in mobile picker sheets. |
+| `mobile-fixes` | Safe-area padding in mobile picker sheets; taller new-thread recents and less space under the input on phones. |
 | `sidebar-status` | Thread status and % done rings in the left icon slot, bold unread titles, stronger project headers, dimmed idle threads, no "No threads" rows, animated expand/collapse. |
 | `keep-spinners` | Desktop app: keeps running-agent animations moving when the window loses focus. |
 
