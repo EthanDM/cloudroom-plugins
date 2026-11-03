@@ -14,7 +14,9 @@ the connected server and does not change when selecting another thread or machin
 
 On `edm-node`, the prompt's send button is also blue so the two servers are
 hard to confuse while typing. The disabled (empty prompt) state keeps the app's
-grey. This uses the button's `data-promptbox-submit-action` hook.
+grey. This uses the button's `data-promptbox-submit-action` hook. While
+recording voice, the recording bar's send (or check) button is blue too: it is
+the last button inside `data-promptbox-voice-controls`.
 
 The dot identifies the machine; it is not a live connection/status indicator.
 The button’s native hover title and accessibility description say

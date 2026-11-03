@@ -107,6 +107,10 @@
     {
       "id": "send-button",
       "description": "On edm-node the enabled send button is blue with a white arrow; disabled stays grey; edm-mbp keeps the default."
+    },
+    {
+      "id": "voice-send-button",
+      "description": "On edm-node, tap the mic: the recording bar's send button (phone) or check button (desktop) is blue, stays blue with a spinner while transcribing; cancel and stop buttons keep their default look."
     }
   ],
   "compact-navigation": [

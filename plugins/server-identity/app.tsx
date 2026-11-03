@@ -31,6 +31,17 @@ const CSS = `
   background: #0588f0;
   border-color: #0588f0;
 }
+/* The voice bar's primary (send, or check without send) is always its last
+   button; it stays blue while disabled so transcription doesn't flash green. */
+[${ROOT_IDENTITY_ATTRIBUTE}="edm-node"] [data-promptbox-voice-controls] button:last-of-type {
+  background: #0090ff;
+  border-color: #0090ff;
+  color: #fff;
+}
+[${ROOT_IDENTITY_ATTRIBUTE}="edm-node"] [data-promptbox-voice-controls] button:last-of-type:not(:disabled):hover {
+  background: #0588f0;
+  border-color: #0588f0;
+}
 `;
 
 type OriginalAttributes = { title: string | null; description: string | null };
