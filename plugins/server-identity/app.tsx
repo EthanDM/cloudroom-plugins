@@ -24,10 +24,12 @@ const CSS = `
 /* Disabled keeps the app's grey so an empty prompt still reads as unsendable. */
 [${ROOT_IDENTITY_ATTRIBUTE}="edm-node"] [data-promptbox-submit-action]:not(:disabled) {
   background: #0090ff;
+  border-color: #0090ff;
   color: #fff;
 }
 [${ROOT_IDENTITY_ATTRIBUTE}="edm-node"] [data-promptbox-submit-action]:not(:disabled):hover {
   background: #0588f0;
+  border-color: #0588f0;
 }
 `;
 
