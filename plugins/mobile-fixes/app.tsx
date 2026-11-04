@@ -44,6 +44,11 @@ ${COMPACT_HOME_SCROLLER} > [data-testid="root-compose-compact-recents-offset"] {
 ${COMPACT_HOME_FOOTER}:empty { display: none; }
 ${COMPACT_HOME_FOOTER} { padding-bottom: 0.5rem !important; }
 @media (max-width: 767px) {
+  /* The native 96px fade washes out a whole recent row above the input. */
+  ${COMPACT_HOME} > [data-testid="root-compose-compact-composer"] > [data-overflow-fade="above"] {
+    height: 1rem;
+    top: -1rem;
+  }
   [data-thread-header-pane-actions] button[aria-label="Side chat"] { display: none !important; }
   .chat-prompt-box:has([contenteditable="true"]:focus) { padding-bottom: 0 !important; }
 }

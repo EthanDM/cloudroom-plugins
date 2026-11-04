@@ -4,6 +4,7 @@ Phone-width fixes (iPhone PWA):
 
 - **Safe area in pickers.** Bottom-sheet pickers such as Environment (Local/Cloud) passed `p-0`, which removed the sheet's home-indicator padding. Adds it back on those sheets only.
 - **Taller recents on the new-thread screen.** The Recent list's scroll area was capped at about 5.5 rows above the input, leaving the top half empty. It now reaches up to the header; a short list still sits right above the input.
+- **Short fade above the input.** On phones, the new-thread input keeps a 16px gradient at the list edge instead of the native 96px band, so the last chat stays readable. No blur is added; other fades keep their native size.
 - **Less space under the input.** The footer under the input only holds the Connect Claude button. Once Claude is connected the row was empty but kept ~42px of padding, on top of the app's own home-indicator space. It's hidden when empty, and otherwise no longer double-pads.
 
 - **Swipe left to open the right panel.** In a thread, swipe left from the right edge (outer 72px) and the page follows your finger, like the left sidebar's swipe. Release past a third, or flick, to open; otherwise it snaps back. Starts on buttons or text fields are ignored. Uses the shelf's `secondary-panel-shelf` test ID, `data-sidebar="inset"`, and the "Show right panel" button label.
