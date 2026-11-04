@@ -111,6 +111,10 @@
     {
       "id": "sidebar-motion",
       "description": "Project expand/collapse and guide lines work at 100%/110%, including reduced motion and rapid toggles."
+    },
+    {
+      "id": "mobile-recents",
+      "description": "Phone Recents uses the sidebar status/progress column, bold unread and muted idle titles, smaller project context with time on the bottom right, and retains native links, child controls, draft/queue states and time updates. Check light/dark, narrow widths, reduced motion, remount/disposal and desktop isolation; verify final appearance on iPhone."
     }
   ],
   "ui-scale": [

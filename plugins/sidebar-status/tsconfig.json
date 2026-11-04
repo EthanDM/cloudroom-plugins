@@ -19,6 +19,8 @@
   "include": [
     "server.ts",
     "app.tsx",
-    "collapse-motion.ts"
+    "collapse-motion.ts",
+    "thread-status.ts",
+    "mobile-recents.ts"
   ]
 }

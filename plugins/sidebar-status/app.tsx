@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { definePluginApp, useRpc } from "@get-bb/plugin-sdk/app";
 import type { rpcContract } from "./server";
 import { startCollapseMotion } from "./collapse-motion";
+import { GLYPH_CSS, PROGRESS_ATTRIBUTE, RING_ARC, RING_MASK, RING_TRACK, STATES, progressBucket } from "./thread-status";
+import { MOBILE_RECENTS_CSS, RECENTS, clearMobileRecentAttributes, tagMobileRecentRows } from "./mobile-recents";
 
 // Moves a thread's status from the trailing indicator into the leading
 // Local/Cloud icon slot, and bolds unread threads.
@@ -17,27 +19,13 @@ const ROW = ":has(> a[data-sidebar-thread-id])";
 const TITLE = `${ROW} > a + span`;
 const TRAILING = `${ROW} > a ~ span:last-child`;
 
-const STATES = [
-  { label: "Thread working", glyph: "running" },
-  { label: "Thread needs user input", glyph: "needs-you" },
-  { label: "Unread thread failed", glyph: "failed" },
-  { label: "Unread thread succeeded", glyph: "unread" },
-] as const;
-
 const rowIn = (label: string) => `${ROW}:has(> a ~ span:last-child [aria-label="${label}"])`;
 const ATTENTION_STATES = STATES.map(({ label }) => `:has(> a ~ span:last-child [aria-label="${label}"])`).join(", ");
 
 // Idle Local threads show a muted ring filled to their Cloudroom purpose
 // "% done". The ThreadRowHints overlay writes a 10-step bucket ("none",
 // "0" … "100") onto each row container; CSS draws the ring from it.
-const PROGRESS_ATTRIBUTE = "data-sidebar-status-progress";
 const PROGRESS_POLL_MS = 60_000;
-// Kept faint on purpose: rings are an anchor and a glance-level hint, and
-// must stay quieter than the attention glyphs above.
-const RING_TRACK = "color-mix(in oklab, var(--muted-foreground) 15%, transparent)";
-const RING_ARC = "color-mix(in oklab, var(--muted-foreground) 38%, transparent)";
-// Cuts the conic fill down to a 1.5px stroke.
-const RING_MASK = "radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px))";
 const idleLocalRow = (progress = "") =>
   `${ROW}[${PROGRESS_ATTRIBUTE}${progress && `="${progress}"`}]:not(${ATTENTION_STATES}):has(> a + span > [aria-label="Local thread"])`;
 
@@ -77,33 +65,6 @@ const EMPTY_PROJECT = `${EMPTY_PROJECT_ITEM} > [data-sidebar-sticky-group]`;
 //
 // Every glyph fills the 0.875rem slot the size-3.5 location icon used, so
 // indentation and the tree guide line stay where they were.
-const GLYPH_CSS: Record<(typeof STATES)[number]["glyph"], string> = {
-  running: `
-    width: 0.6875rem; height: 0.6875rem; margin: 0.09375rem;
-    border: 1.5px solid #60a5fa;
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: sidebar-status-spin 0.9s linear infinite;`,
-  "needs-you": `
-    content: "?";
-    border: 1.25px solid var(--warning-text);
-    border-radius: 50%;
-    color: var(--warning-text);
-    font: 700 0.5625rem/1 system-ui, sans-serif;`,
-  // Two drawn diagonal strokes, not a "×" character: that glyph sits on the
-  // font's math axis, below the circle's center in some engine/font pairs.
-  failed: `
-    border: 1.25px solid var(--destructive-text);
-    border-radius: 50%;
-    background:
-      linear-gradient(45deg, transparent calc(50% - 0.75px), var(--destructive-text) 0 calc(50% + 0.75px), transparent 0) center / 0.375rem 0.375rem no-repeat,
-      linear-gradient(-45deg, transparent calc(50% - 0.75px), var(--destructive-text) 0 calc(50% + 0.75px), transparent 0) center / 0.375rem 0.375rem no-repeat;`,
-  unread: `
-    width: 0.375rem; height: 0.375rem; margin: 0.25rem;
-    border-radius: 50%;
-    background: var(--foreground);`,
-};
-
 const SIDEBAR_STATUS_CSS = `
 @keyframes sidebar-status-spin { to { transform: rotate(360deg); } }
 
@@ -243,10 +204,6 @@ interface SidebarThread {
 }
 type SidebarThreads = ReadonlyMap<string, SidebarThread>;
 
-function progressBucket(percent: number | null): string {
-  return percent === null ? "none" : String(Math.round(percent / 10) * 10);
-}
-
 /** "4d", "2w", "3mo" once a thread has been idle STALE_AFTER_DAYS; null before. */
 function staleAge(lastActiveAt: number, now: number): string | null {
   const days = Math.floor((now - lastActiveAt) / DAY_MS);
@@ -295,11 +252,10 @@ function useSidebarThreads(): SidebarThreads {
 }
 
 /**
- * Tags each sidebar row container with its progress bucket, its trailing
- * span with its stale age, and empty project items. Rows remount and empty
- * messages change text in place, so a MutationObserver re-tags after sidebar
- * DOM and text changes. React leaves attributes it doesn't own alone on
- * elements it keeps.
+ * Tags sidebar and mobile Recent rows with progress, separates Recent
+ * metadata, and marks stale/empty sidebar items. Rows can mount after the
+ * overlay; native labels and timestamps also change without remounting. React
+ * leaves attributes it does not own alone on elements it keeps.
  */
 function useRowAttributes(threads: SidebarThreads): void {
   useEffect(() => {
@@ -315,6 +271,7 @@ function useRowAttributes(threads: SidebarThreads): void {
           setOrRemoveAttribute(trailing, AGE_ATTRIBUTE, thread ? staleAge(thread.lastActiveAt, now) : null);
         }
       }
+      tagMobileRecentRows(threads);
       for (const item of document.querySelectorAll("[data-sidebar-sticky-project-item]")) {
         const message = item.querySelector(`:scope > [data-sidebar-sticky-group] > ${LABEL_TIER} + div`)?.textContent?.trim();
         setOrRemoveAttribute(item, EMPTY_ATTRIBUTE, message && EMPTY_MESSAGES.has(message) ? "" : null);
@@ -324,19 +281,22 @@ function useRowAttributes(threads: SidebarThreads): void {
     let frame = 0;
     const observer = new MutationObserver((records) => {
       if (frame) return;
-      const touchesSidebar = records.some(
-        ({ target }) => (target instanceof Element ? target : target.parentElement)?.closest("[data-sidebar-sticky-project-item], [data-sidebar-section-id]"),
-      );
-      if (touchesSidebar) frame = requestAnimationFrame(() => {
+      const touchesThreadLists = records.some(({ target, addedNodes }) => {
+        const element = target instanceof Element ? target : target.parentElement;
+        return element?.closest(`[data-sidebar-sticky-project-item], [data-sidebar-section-id], ${RECENTS}`) ||
+          [...addedNodes].some((node) => node instanceof Element && (node.matches(RECENTS) || node.querySelector(RECENTS)));
+      });
+      if (touchesThreadLists) frame = requestAnimationFrame(() => {
         frame = 0;
         tagRows();
       });
     });
     tagRows();
-    observer.observe(document.body, { childList: true, characterData: true, subtree: true });
+    observer.observe(document.body, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ["title", "href"] });
     return () => {
       observer.disconnect();
       cancelAnimationFrame(frame);
+      clearMobileRecentAttributes();
       for (const element of document.querySelectorAll(`[${PROGRESS_ATTRIBUTE}], [${AGE_ATTRIBUTE}], [${EMPTY_ATTRIBUTE}]`)) {
         element.removeAttribute(PROGRESS_ATTRIBUTE);
         element.removeAttribute(AGE_ATTRIBUTE);
@@ -357,7 +317,7 @@ export default definePluginApp((app) => {
     id: "sidebar-status",
     mount: () => {
       const style = document.createElement("style");
-      style.textContent = SIDEBAR_STATUS_CSS;
+      style.textContent = SIDEBAR_STATUS_CSS + MOBILE_RECENTS_CSS;
       document.head.append(style);
       return () => style.remove();
     },

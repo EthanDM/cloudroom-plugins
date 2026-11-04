@@ -33,3 +33,35 @@ Assumes Settings → Appearance → Harness icons is Off (the default). Matches 
 Collapsed project sections keep Cloudroom's own rollup indicator.
 
 Remove: `room-cli plugin remove sidebar-status`.
+
+## Mobile Recents
+
+On phone widths (below 768px), the new-thread screen uses the same status
+column as the sidebar instead of boxed provider logos. Unread titles are bold;
+read, idle titles recede. Idle Local threads get the same progress rings/check,
+and idle Cloud threads keep a muted cloud. Other native statuses, including
+drafts and queued work, remain visible in the leading slot.
+
+Project/workspace context is smaller beneath the title, with time aligned
+right on that same bottom line. The usual `main` workspace is omitted from
+three-part metadata; other branch names truncate before the timestamp.
+Native row height, links, child indentation/toggles, status labels, focus and
+selection remain in charge. Desktop Recents keep their original presentation.
+
+This additionally matches v139's `[data-root-compose-mobile-recents]` row
+structure and native metadata `title` (`project · workspace · time`). It never
+replaces React-owned text; labels are projected through removable attributes
+and CSS, so native time updates and disabling the plugin restore cleanly.
+
+For the focused browser fixture, compile the DOM helpers from this folder:
+
+```sh
+npx tsc mobile-recents.ts thread-status.ts --target es2022 --module es2022 --moduleResolution bundler --skipLibCheck --outDir /tmp/sidebar-status-qa
+```
+
+In an owned blank browser-harness tab, load both emitted files (remove their
+relative import/export statements), then run `tests/mobile_recents.browser.js`
+with `runMobileRecentTests()`. It verifies the v139 DOM contract, leading
+status states, metadata updates, progress/Cloud fallbacks, narrow widths,
+dark theme, child controls, desktop isolation and disposal. It does not prove
+physical iPhone/Safari rendering.

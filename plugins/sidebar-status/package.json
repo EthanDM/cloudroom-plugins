@@ -8,7 +8,7 @@
   },
   "bb": {
     "name": "Sidebar Status",
-    "description": "Thread status and progress rings in the left icon slot, bold unread threads, and a clearer project/thread hierarchy.",
+    "description": "Shared status glyphs and progress rings in the sidebar and mobile Recents, bold unread titles, and clearer thread hierarchy.",
     "branding": {
       "icon": "BellDot"
     },
